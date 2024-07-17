@@ -1,0 +1,24 @@
+name: Test self-hosted runner
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+        - main
+
+jobs:
+  echo_hello_world:
+    runs-on: self-hosted
+
+    steps:
+    - name: "Echo Hello World"
+      run: echo "Hello World"
+
+  create_file:
+    runs-on: self-hosted
+
+    steps:
+    - name: "Create a file"
+      run: |
+        touch test.txt
+        echo "Hello World" > test.txt
