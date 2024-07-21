@@ -1,0 +1,24 @@
+name: Docker Build and Push
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check Out Repository
+      uses: actions/checkout@v2
+
+    - name: Log in to GitHub Container Registry
+      run: echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u ${{ secrets.DOCKER_GITHUB_USERNAME }} --password-stdin
+
+    - name: Build and Push Docker Images
+      working-directory: ./src
+      run: |
+        docker-compose -f docker-compose.prod.yml build
+        docker-compose -f docker-compose.prod.yml push
