@@ -1,0 +1,28 @@
+version: '3.4'
+
+services:
+  database:
+    build:
+      context: database
+      dockerfile: ./Dockerfile
+    restart: always
+    container_name: whoknows_database
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password  # Change to a secure password
+      - POSTGRES_DB=whoknows
+    ports:
+      - "5432:5432"
+    volumes: 
+      - database:/var/lib/postgresql/data
+    networks:
+      - postgres
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  database:
+
+networks:
+  postgres:
+    driver: bridge
