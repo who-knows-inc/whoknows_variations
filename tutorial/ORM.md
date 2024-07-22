@@ -1,6 +1,6 @@
 # ORM (`sqlalchemy`)
 
-The ORM setup lies in `/src/bakend/db/`.
+The ORM setup lies in `src/bakend/db/`.
 
 1. `db_orm.py` sets up the connection to the database.
 
@@ -22,11 +22,11 @@ The interesting part is that due to the setup in the docker compose file, the ap
 
 ## The dependencies
 
-Take a note of the new dependencies in `/src/backend/requirements.txt`. 
+Take a note of the new dependencies in `src/backend/requirements.txt`. 
 
 `psycopg` is the driver that allows us to connect to `PostgreSQL` but it requires some non-Python OS-level dependencies to be installed. 
 
-This is taken care of in the `/src/backend/Dockerfile`:
+This is taken care of in the `src/backend/Dockerfile`:
 
 ```Dockerfile
 # Install psycopg2 dependencies
@@ -56,7 +56,7 @@ INSERT INTO users (username, email, password)
     VALUES ('admin', 'keamonk1@stud.kea.dk', '5f4dcc3b5aa765d61d8327deb882cf99');
 ```
 
-## Finishing words
+## Final words
 
 You are now well on your way to use the ORM in your project. Let copilot guide you on how to do the rest.
 
