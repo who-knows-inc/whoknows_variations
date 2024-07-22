@@ -20,6 +20,18 @@ app = Flask(__name__)
 
 app.secret_key = SECRET_KEY
 
+# NEW! NEW! NEW!
+
+from db.models import User, Page
+from db.db_orm import Database
+
+database = Database()
+
+with database.connect_db() as db:
+    users = db.query(User).all()
+    for user in users:
+        print(user.username)
+    
 
 ################################################################################ 
 # Database Functions
@@ -27,8 +39,8 @@ app.secret_key = SECRET_KEY
 
 def connect_db(init_mode=False):
     """Returns a new connection to the database."""
-    if not init_mode:
-        check_db_exists()
+    # if not init_mode:
+    #     check_db_exists()
     return sqlite3.connect(DATABASE_PATH)
 
 
@@ -36,7 +48,6 @@ def check_db_exists():
     """Checks if the database exists."""
     db_exists = os.path.exists(DATABASE_PATH)
     if not db_exists:
-        print "Database not found"
         sys.exit(1)
     else:
         return db_exists
@@ -48,7 +59,6 @@ def init_db():
         with app.open_resource('../schema.sql') as f:
             db.cursor().executescript(f.read().decode('utf-8'))
         db.commit()
-        print "Initialized the database: " + str(DATABASE_PATH)
 
 
 def query_db(query, args=(), one=False):
@@ -213,8 +223,6 @@ def verify_password(stored_hash, password):
 # Main
 ################################################################################
 if __name__ == '__main__':
-    # Try to connect to the database first
-    connect_db()
     # Run the server
     # debug=True enables automatic reloading and better messaging, only for development
     app.run(host="0.0.0.0", port=8080, debug=DEBUG)
