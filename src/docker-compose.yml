@@ -1,5 +1,3 @@
-version: '3.4'
-
 services:
   database:
     build:
@@ -19,6 +17,15 @@ services:
       - postgres
     extra_hosts:
       - "host.docker.internal:host-gateway"
+
+  whoknows_flask:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - postgres
 
 volumes:
   database:
