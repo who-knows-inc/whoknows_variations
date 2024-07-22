@@ -6,6 +6,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
+  # change github.actor if the image is owned by an organization
   IMAGE_NAME: ${{ github.actor }}/full-pipeline:latest
 
 jobs:
@@ -25,8 +26,10 @@ jobs:
         run: |
           ssh -i ~/.ssh/ssh_key -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << 'EOF'
           docker pull nginx
+          docker rm -f hello-nginx || true
           docker run -d -p 80:80 --name hello-nginx nginx
           EOF
         env:
+          # Make sure that the SSH_USER has permission to run docker
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOST: ${{ secrets.SSH_HOST }}

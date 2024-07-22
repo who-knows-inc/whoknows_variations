@@ -22,3 +22,18 @@ There is a third category that excludes Github Actions and requires third-party 
 <!-- todo complete this -->
 
 [This tutorial is not yet complete, but it might inspire you on how to approach this problem.](./tutorials/self_hosted_runner.md)
+
+
+## Things to consider
+
+The deployment workflow should not run on push but instead be dependent on another workflow. This can be achieved like this:
+
+```yaml
+on:
+  workflow_run:
+    workflows: ["<name_of_workflow>"]
+    types:
+      - completed
+  workflow_dispatch:
+```
+
