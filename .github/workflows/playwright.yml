@@ -4,6 +4,8 @@ on:
     branches: end-to-end-testing
   pull_request:
     branches: end-to-end-testing
+  workflow_dispatch:
+
 jobs:
   test:
     timeout-minutes: 60
