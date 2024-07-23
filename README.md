@@ -17,9 +17,9 @@ It makes sense in this repository to also change the trigger to this:
 ```yaml
 on:
   push:
-    branches: end-to-end-testing
+    branches: end-to-end_testing
   pull_request:
-    branches: end-to-end-testing
+    branches: end-to-end_testing
 ```
 
 ## Running the tests
