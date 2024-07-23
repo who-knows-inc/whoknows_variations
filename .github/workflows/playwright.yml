@@ -6,6 +6,9 @@ on:
     branches: [ end-to-end_testing ]
   workflow_dispatch:
 
+permissions:
+  contents: write  # This is to give the workflow permission to deploy to GH pages
+  
 jobs:
   test:
     timeout-minutes: 60
@@ -54,6 +57,9 @@ jobs:
         path: src/tests/e2e/playwright-report/
         retention-days: 30
 
+    # - name: Ensure Playwright report directory exists
+    #   run: mkdir -p src/tests/e2e/playwright-report
+  
     - name: Deploy to GitHub Pages
       if: always()
       uses: peaceiris/actions-gh-pages@v3
