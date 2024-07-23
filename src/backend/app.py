@@ -11,7 +11,7 @@ from flask import Flask, request, session, url_for, redirect, render_template, g
 # Configuration
 ################################################################################
 
-DATABASE_PATH = '/tmp/whoknows.db'
+DATABASE_PATH = './whoknows.db'
 PER_PAGE = 30
 DEBUG = False
 SECRET_KEY = 'development key'
@@ -20,18 +20,6 @@ app = Flask(__name__)
 
 app.secret_key = SECRET_KEY
 
-# NEW! NEW! NEW!
-
-from db.models import User, Page
-from db.db_orm import Database
-
-database = Database()
-
-with database.connect_db() as db:
-    users = db.query(User).all()
-    for user in users:
-        print(user.username)
-    
 
 ################################################################################ 
 # Database Functions
@@ -39,24 +27,13 @@ with database.connect_db() as db:
 
 def connect_db(init_mode=False):
     """Returns a new connection to the database."""
-    # if not init_mode:
-    #     check_db_exists()
     return sqlite3.connect(DATABASE_PATH)
-
-
-def check_db_exists():
-    """Checks if the database exists."""
-    db_exists = os.path.exists(DATABASE_PATH)
-    if not db_exists:
-        sys.exit(1)
-    else:
-        return db_exists
 
 
 def init_db():
     """Creates the database tables."""
     with closing(connect_db(init_mode=True)) as db:
-        with app.open_resource('../schema.sql') as f:
+        with app.open_resource('../database/schema.sql') as f:
             db.cursor().executescript(f.read().decode('utf-8'))
         db.commit()
 
