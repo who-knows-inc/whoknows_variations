@@ -10,35 +10,43 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v4
+
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
-    - name: Set up Python 2
+
+    - name: Set up Python 3
       uses: actions/setup-python@v4
       with:
-        python-version: 2.x
+        python-version: '3.x'
+
     - name: Install Python dependencies
-      run: make install
-      working-directory: src
+      run: pip install -r src/backend/requirements.txt
+
     - name: Start Flask server
-      run: make run &
-      working-directory: src
+      run: python src/backend/app.py &
+      
     - name: Wait for server to be ready
       run: |
         echo "Waiting for server to start..."
         sleep 10  # Adjust sleep duration as needed
         while ! curl -s http://localhost:8080 > /dev/null; do sleep 1; done
+
     - name: Install Node.js dependencies
       run: npm ci
       working-directory: src/tests/e2e
+
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
       working-directory: src/tests/e2e
+
     - name: Run Playwright tests
       run: npx playwright test
       working-directory: src/tests/e2e
+
     - uses: actions/upload-artifact@v4
       if: always()
       with:

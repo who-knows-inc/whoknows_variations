@@ -84,4 +84,10 @@ on:
 
 You can record tests by running `npx playwright codegen`. This will generate a test file based on your interactions with the website.
 
-Consider whether you want to run the test in a Github Action runner or after the website has been deployed. Or both? Consider creating a test environment before deploying. 
+Consider how you will create your test environment. Will you:
+
+- Run the tests in the Github Action runner?
+- Run the tests in a test environment before deploying?
+- Run the tests after the website has been deployed?
+
+Or maybe a combination of these options?
