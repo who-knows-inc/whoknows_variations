@@ -100,6 +100,15 @@ The example includes a step to deploy the latest report to GH Pages:
         publish_dir: src/tests/e2e/playwright-report
 ```
 
+Write permission is required for it to deploy to GH Pages:
+
+```yaml
+permissions:
+  contents: write 
+```
+
+Beware that it can sometimes take a few minutes for Github to update GH Pages.
+
 This would make it accessible at `https://<username>.github.io/<repository>/`. 
 
 ## Further inspiration
