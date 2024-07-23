@@ -45,6 +45,9 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
       working-directory: src/tests/e2e
+    
+    - name: Ensure report directory is created
+      run: mkdir -p src/tests/e2e/playwright-report
 
     - name: Run Playwright tests
       run: npx playwright test
@@ -56,10 +59,11 @@ jobs:
         name: playwright-report
         path: src/tests/e2e/playwright-report/
         retention-days: 30
-
+  
     - name: Deploy to GitHub Pages
       if: always()
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: src/tests/e2e/playwright-report
+        publish_branch: gh-pages

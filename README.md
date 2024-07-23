@@ -89,7 +89,19 @@ You can download the report from the Github Actions workflow. The report is save
 
 <img src="./tutorials/github_action_artifacts.png" alt="github actions playwright workflow artifact download report">
 
-The example includes a step to deploy the latest report to GH Pages:
+#### [Optional] Deploying the report to GH Pages
+
+You must configure Github Pages in your repository settings. Here is how you do it:
+
+1. Go to your repository on GitHub.
+2. Click on the **Settings** tab.
+3. In the left sidebar, click on **Pages**.
+4. Under the **Source** section, select **gh-pages** branch from the dropdown menu and ensure the directory is set to **/root**.
+5. Click **Save**.
+
+Deploying over the `gh-pages` branch is the standard way to do it. 
+
+Please have look at the [full example](./.github/workflows/playwright.yml). Here is the step to deploy the latest report to GH Pages:
 
 ```yaml
     - name: Deploy to GitHub Pages
@@ -98,20 +110,22 @@ The example includes a step to deploy the latest report to GH Pages:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: src/tests/e2e/playwright-report
+        publish_branch: gh-pages
 ```
 
-Write permission is required for it to deploy to GH Pages:
+
+Giving the workflow write permission is required for it to deploy to GH Pages:
 
 ```yaml
 permissions:
   contents: write 
 ```
 
-Beware that it can sometimes take a few minutes for Github to update GH Pages.
+Beware that it can sometimes take a few minutes for Github to update GH Pages. Or your browser might cache the old version of the report.
 
-This would make it accessible at `https://<username>.github.io/<repository>/`. 
+The report should now be accessible at `https://<username>.github.io/<repository>/`. 
 
-## Further inspiration
+## Further considerations
 
 You can record tests by running `npx playwright codegen`. This will generate a test file based on your interactions with the website.
 
