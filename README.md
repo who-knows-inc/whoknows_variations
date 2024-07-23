@@ -67,7 +67,9 @@ $ npx playwright show-report
 
 ## Github Actions
 
-The setup offers to create a Github Actions workflow. Note how the workflow [in this repository](.github/workflows/playwright.yml) has been modified, with the `working-directory` key, to reflect the project structure.
+### Setup
+
+The Playwright CLI setup process offers to create a Github Actions workflow. Note how the workflow [in this repository](.github/workflows/playwright.yml) has been modified, with the `working-directory` key, to reflect the project structure.
 
 It makes sense in this repository to also change the trigger to this:
 
@@ -80,6 +82,25 @@ on:
 ```
 
 Additional steps have been added to run the application on the runner so that the tests can be run against it.
+
+### Report
+
+You can download the report from the Github Actions workflow. The report is saved as an artifact. Click on download inside of the workflow run.
+
+<img src="./tutorials/github_action_artifacts.png" alt="github actions playwright workflow artifact download report">
+
+The example includes a step to deploy the latest report to GH Pages:
+
+```yaml
+    - name: Deploy to GitHub Pages
+      if: always()
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: src/tests/e2e/playwright-report
+```
+
+This would make it accessible at `https://<username>.github.io/<repository>/`. 
 
 ## Further inspiration
 
