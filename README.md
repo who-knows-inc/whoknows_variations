@@ -79,6 +79,7 @@ on:
     branches: end-to-end_testing
 ```
 
+Additional steps have been added to run the application on the runner so that the tests can be run against it.
 
 ## Further inspiration
 
