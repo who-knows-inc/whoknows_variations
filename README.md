@@ -8,7 +8,19 @@ Follow the tutorial from the documentation:
 
 https://playwright.dev/docs/intro
 
+### Github Actions
+
 The setup offers to create a Github Actions workflow. Note how the workflow [in this repository](.github/workflows/playwright.yml) has been modified, with the `working-directory` key, to reflect the project structure.
+
+It makes sense in this repository to also change the trigger to this:
+
+```yaml
+on:
+  push:
+    branches: end-to-end-testing
+  pull_request:
+    branches: end-to-end-testing
+```
 
 ## Running the tests
 
