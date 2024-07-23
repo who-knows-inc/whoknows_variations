@@ -8,19 +8,6 @@ Follow the tutorial from the documentation:
 
 https://playwright.dev/docs/intro
 
-### Github Actions
-
-The setup offers to create a Github Actions workflow. Note how the workflow [in this repository](.github/workflows/playwright.yml) has been modified, with the `working-directory` key, to reflect the project structure.
-
-It makes sense in this repository to also change the trigger to this:
-
-```yaml
-on:
-  push:
-    branches: end-to-end_testing
-  pull_request:
-    branches: end-to-end_testing
-```
 
 ## Running the tests
 
@@ -78,6 +65,23 @@ You can view a report of the test results:
 $ npx playwright show-report
 ```
 
+## Github Actions
+
+The setup offers to create a Github Actions workflow. Note how the workflow [in this repository](.github/workflows/playwright.yml) has been modified, with the `working-directory` key, to reflect the project structure.
+
+It makes sense in this repository to also change the trigger to this:
+
+```yaml
+on:
+  push:
+    branches: end-to-end_testing
+  pull_request:
+    branches: end-to-end_testing
+```
+
+
 ## Further inspiration
 
 You can record tests by running `npx playwright codegen`. This will generate a test file based on your interactions with the website.
+
+Consider whether you want to run the test in a Github Action runner or after the website has been deployed. Or both? Consider creating a test environment before deploying. 

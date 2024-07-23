@@ -1,9 +1,9 @@
 name: Playwright Tests
 on:
   push:
-    branches: end-to-end_testing
+    branches: [ end-to-end_testing ]
   pull_request:
-    branches: end-to-end_testing
+    branches: [ end-to-end_testing ]
   workflow_dispatch:
 
 jobs:
@@ -15,7 +15,22 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
-    - name: Install dependencies
+    - name: Set up Python 2
+      uses: actions/setup-python@v4
+      with:
+        python-version: 2.x
+    - name: Install Python dependencies
+      run: make install
+      working-directory: src
+    - name: Start Flask server
+      run: make run &
+      working-directory: src
+    - name: Wait for server to be ready
+      run: |
+        echo "Waiting for server to start..."
+        sleep 10  # Adjust sleep duration as needed
+        while ! curl -s http://localhost:8080 > /dev/null; do sleep 1; done
+    - name: Install Node.js dependencies
       run: npm ci
       working-directory: src/tests/e2e
     - name: Install Playwright Browsers
