@@ -1,33 +1,71 @@
 # Flask Variations
 
-# Merging:
+This branch focuses on end-to-end testing the Flask application using Playwright. The tests are located in the `src/test/e2e` directory.
 
-Use the `ours` merge strategy to merge the `main` branch into the `new_branch` branch. only update the `main` branch.
+## Getting started with Playwright
 
-Merging into `main` branch example:
+Follow the tutorial from the documentation:
 
-```bash
-git checkout new_branch
-git merge -s ours main
+https://playwright.dev/docs/intro
+
+The setup offers to create a Github Actions workflow. Note how the workflow [in this repository](.github/workflows/playwright.yml) has been modified, with the `working-directory` key, to reflect the project structure.
+
+## Running the tests
+
+First install the dependencies in `src/test/e2e` using `npm install`.
+
+
+The CLI provides the following suggestions:
+
+```text
+ npx playwright test
+    Runs the end-to-end tests.
+
+  npx playwright test --ui
+    Starts the interactive UI mode.
+
+  npx playwright test --project=chromium
+    Runs the tests only on Desktop Chrome.
+
+  npx playwright test example
+    Runs the tests in a specific file.
+
+  npx playwright test --debug
+    Runs the tests in debug mode.
+
+  npx playwright codegen
+    Auto generate tests with Codegen.
 ```
 
-## How to get started
+## Making adjustments for our project
 
-Each branch is a tutorial in a different topic based on the same Flask application as in the `main` branch. 
+Make sure to run the Flask application. For instance, you could run `make run` in the `src` directory. 
 
-One way to follow along is by:
+Update the baseURL key in `src/test/e2e/playwright.config.js`:
 
-1. Forking the repository to your own account.
+```js
+import { defineConfig } from '@playwright/test';
 
-2. Cloning the repository to your local machine.
+export default defineConfig({
+  testDir: './tests',
+  use: {
+    baseURL: 'http://localhost:8080',
+  },
+});
+```
 
-3. Checking out the branch you are interested in (e.g. `git checkout <branch_name>`).
+A basic test has been created in `basic-functionality.spec.js`. Run it:
 
-4. Following the instructions in the README of the branch.
+```bash
+$ npx playwright test
+```
 
-5. You can now push changes to your own repository. 
+You can view a report of the test results:
 
-## Pull requests
+```bash
+$ npx playwright show-report
+```
 
-If you have any suggestions or improvements to the tutorials, feel free to open a pull request.
+## Further inspiration
 
+You can record tests by running `npx playwright codegen`. This will generate a test file based on your interactions with the website.
