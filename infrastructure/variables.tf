@@ -127,15 +127,3 @@ variable "ssh_private_key" {
   type        = string
   default     = "~/.ssh/id_rsa"
 }
-
-variable "ansible_playbook_source" {
-  description = "The source path for the Ansible playbook"
-  type        = string
-  default     = "./ansible/playbook.yml"
-}
-
-variable "ansible_playbook_destination" {
-  description = "The destination path for the Ansible playbook"
-  type        = string
-  default     = "/home/adminuser/playbook.yml"
-}

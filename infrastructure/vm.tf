@@ -28,18 +28,6 @@ resource "azurerm_linux_virtual_machine" "keacloud" {
   disable_password_authentication = true
 
   provisioner "file" {
-    source      = var.ansible_playbook_source
-    destination = var.ansible_playbook_destination
-
-    connection {
-      type        = "ssh"
-      user        = var.admin_username
-      private_key = file(var.ssh_private_key)
-      host        = azurerm_public_ip.keacloud.ip_address
-    }
-  }
-
-  provisioner "file" {
     source      = var.ssh_private_key
     destination = "/home/${var.admin_username}/.ssh/id_rsa"
 

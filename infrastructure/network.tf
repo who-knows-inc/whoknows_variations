@@ -65,3 +65,11 @@ resource "azurerm_network_security_rule" "keacloud_ssh_rule" {
   network_security_group_name = azurerm_network_security_group.keacloud_nsg.name
   resource_group_name         = azurerm_resource_group.keacloud.name
 }
+
+resource "azurerm_dns_a_record" "keacloud" {
+  name                = "www"
+  zone_name           = azurerm_dns_zone.keacloud.name
+  resource_group_name = azurerm_resource_group.keacloud.name
+  ttl                 = 300
+  records             = [azurerm_public_ip.keacloud.ip_address]
+}
