@@ -12,6 +12,9 @@ There is a third category that excludes Github Actions and requires third-party 
 
 
 
+<!-- TODO create a setup.sh script and run git update-index --chmod=+x setup.sh on it -->
+
+
 ## SSH and execute commands remotely
 
 [Tutorial](./tutorials/ssh_and_execute_commands_remotely.md)
