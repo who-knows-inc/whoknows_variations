@@ -1,23 +1,4 @@
 services:
-  database:
-    build:
-      context: database
-      dockerfile: ./Dockerfile
-    restart: always
-    container_name: whoknows_database
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password  # Change to a secure password
-      - POSTGRES_DB=whoknows
-    ports:
-      - "5432:5432"
-    volumes: 
-      - database:/var/lib/postgresql/data
-    networks:
-      - postgres
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-
   whoknows_flask:
     build:
       context: ./backend
@@ -25,11 +6,28 @@ services:
     ports:
       - "8080:8080"
     networks:
-      - postgres
+      - app_network
+    depends_on:
+      - grafana
+      - prometheus
 
-volumes:
-  database:
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - app_network
+
+  grafana:
+    image: grafana/grafana:10.2.4
+    ports:
+      - "3000:3000"
+    networks:
+      - app_network
 
 networks:
-  postgres:
+  app_network:
     driver: bridge

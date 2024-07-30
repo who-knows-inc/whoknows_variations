@@ -1,87 +1,46 @@
 # Flask Variations
 
-## Introduction
-
-This gives an example of how to setup PostgreSQL with Flask. 
-
-The example uses `sqlalchemy` as an ORM and `alembic` as a migration tool. `psycopg2` is the PostgreSQL adapter.
-
-PostgreSQL is currently the most popular and used database. [Source](https://survey.stackoverflow.co/2023/#section-most-popular-technologies-databases). You are free to use any database you want, of course.
 
 
-## Structure
+## Get started
 
-One of the goals is to create a better structure. This is the tree of `src` folder:
+cd into the src folder where `docker-compose.yml` is located and run the following command:
 
 ```bash
-src
-├── Makefile
-├── README.md
-├── backend
-│   ├── app.py
-│   ├── app.pyc
-│   ├── app_tests.py
-│   ├── db
-│   ├── migration
-│   ├── requirements.txt
-│   ├── static
-│   │   └── style.css
-│   └── templates
-│       ├── about.html
-│       ├── layout.html
-│       ├── login.html
-│       ├── register.html
-│       └── search.html
-├── database
-├── run_forever.sh
-└── schema.sql
+$ docker-compose up --build
 ```
 
-Note that `schema.sql` was moved into the database folder. A seperation has been created between what relates to the database itself and the database code that the application uses.
+## URLs
 
-1. The database itself. 
+Who knows app: http://localhost:8080/
 
-**a.** The `database` folder on the same level as the `backend` contains the Dockerfile that defines our PostgreSQL database. 
+Who knows metrics endpoint: http://localhost:8080/metrics
 
+The Prometheus web client: http://localhost:9090/
 
-2. Database code relating to the application.
+The Grafana dashboard: http://localhost:3000/ (login with `admin`/`admin`.)
 
-**a.** Inside of the `backend` folder, the `db` folder sets up the database connection (*ORM*) and the models. 
+If you are following the tutorial with intent to implement it for your group, remember to change the login credentials to what is posted in Teams. 
 
-**b.** Inside of the `backend` folder, the `migration` folder contains the `alembic` configuration and the migration scripts.
+## Steps
 
-## `schema.sql`
+1. [The Flask Prometheus setup and docker-compose.yml](./tutorial/1._Flask_Prometheus_Setup.md)
 
-The `schema.sql` file has been adapted from SQLite to PostSQL syntax. The changes relate to how primary key and enums are defined. 
-
-Original (SQLite)                            | Updated (PostgreSQL)
----------------------------------------------|-----------------------------------------
-  id INTEGER PRIMARY KEY AUTOINCREMENT,      |   id **SERIAL PRIMARY KEY**,
-    ...                                      | **DROP TABLE IF EXISTS pages**;
-  title TEXT PRIMARY KEY UNIQUE,             |   title **TEXT PRIMARY KEY**,
-  language TEXT NOT NULL                     |   language TEXT NOT NULL DEFAULT 'en' CHECK
-  CHECK(language IN ('en', 'da'))            |   (language IN ('en', 'da')),
-  DEFAULT 'en',                              |
+2. [The Grafana setup](./tutorial/1._Grafana_Setup.md)
 
 
-## The database itself
+## Warning
 
-[The Database](./tutorial/The_Database.md)
+Running Prometheus and Grafana on the same server as the app is not recommended. Why do you think that is?
 
+Besides the answer to the question above, it will probably be difficult to achieve with the server sizes we use. 
 
-## ORM (`sqlalchemy`)
+## Further work
 
-[ORM](./tutorial/ORM.md)
+If you are interested you can go to the Prometheus dashboard (http://localhost:9090/) and try out the *Prometheus query language*.
 
+Here are some links for inspiration:
 
+https://promlabs.com/promql-cheat-sheet/
 
-## Migration
-
-[Migration](./tutorial/Migration.md)
-
-
-## Future work
-
-1. You should have improved the schema significantly from the legacy SQLite schema. Adapt the models to the new schema.
-
-2. Create migrations for the data in your SQLite database so that it will be read into the new PostgreSQL database.
+https://blog.ruanbekker.com/cheatsheets/prometheus/
