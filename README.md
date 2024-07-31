@@ -26,7 +26,7 @@ If you are following the tutorial with intent to implement it for your group, re
 
 1. [The Flask Prometheus setup and docker-compose.yml](./tutorial/1._Flask_Prometheus_Setup.md)
 
-2. [The Grafana setup](./tutorial/1._Grafana_Setup.md)
+2. [The Grafana setup](./tutorial/2._Grafana_Setup.md)
 
 
 ## Warning
