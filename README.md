@@ -79,6 +79,14 @@ Original (SQLite)                            | Updated (PostgreSQL)
 
 [Migration](./tutorial/Migration.md)
 
+## [Optional] pgAdmin
+
+You could consider adding [pgAdmin](https://www.pgadmin.org/) to your project. 
+
+pgAdmin provides a visual dashboard to monitor and administer your database. Docker offers an example of how to do it:
+
+https://github.com/docker/awesome-compose/tree/master/postgresql-pgadmin
+
 
 ## Future work
 
