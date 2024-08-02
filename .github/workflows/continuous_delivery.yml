@@ -10,6 +10,7 @@ on:
 env:
   CR_PAT: ${{ secrets.CR_PAT }}
   DOCKER_GITHUB_USERNAME: ${{ secrets.DOCKER_GITHUB_USERNAME }}
+  ENV_GREETING: ${{ secrets.ENV_GREETING }}
 
 jobs:
   build:
@@ -26,6 +27,6 @@ jobs:
       run: echo ${{ env.CR_PAT }} | docker login ghcr.io -u ${{ env.DOCKER_GITHUB_USERNAME }} --password-stdin
 
     - name: Build and Push Docker Images
-      working-directory: ./
+      working-directory: ./src
       run: |
         docker buildx bake -f docker-compose.prod.yml --push

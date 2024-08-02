@@ -4,6 +4,8 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile.dev
+    env_file:
+      - backend/.env
     ports:
       - "8080:8080"
     networks:

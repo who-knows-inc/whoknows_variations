@@ -11,7 +11,7 @@ from flask import Flask, request, session, url_for, redirect, render_template, g
 # Configuration
 ################################################################################
 
-DATABASE_PATH = './whoknows.db'
+DATABASE_PATH = '../whoknows.db'
 PER_PAGE = 30
 DEBUG = False
 SECRET_KEY = 'development key'
@@ -19,6 +19,18 @@ SECRET_KEY = 'development key'
 app = Flask(__name__)
 
 app.secret_key = SECRET_KEY
+
+################################################################################ 
+# Environment Variables
+################################################################################
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+@app.route('/greeting')
+def home():
+    return os.getenv('GREETING')
 
 
 ################################################################################ 
