@@ -29,11 +29,9 @@ If you are following the tutorial with intent to implement it for your group, re
 2. [The Grafana setup](./tutorial/2._Grafana_Setup.md)
 
 
-## Warning
+## Beware: Server size limitation
 
-Running Prometheus and Grafana on the same server as the app is not recommended. Why do you think that is?
-
-Besides the answer to the question above, it will probably be difficult to achieve with the server sizes we use. 
+Besides the reasons why you shouldn't run the monitoring setup on teh same server as that which you are monitoring, running Prometheus and Grafana on the same server as the app will probably be difficult to achieve with the server sizes we use. 
 
 ## Further work
 
