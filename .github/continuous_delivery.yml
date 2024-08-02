@@ -5,6 +5,7 @@ on:
     branches: [ continuous_delivery ]
   pull_request:
     branches: [ continuous_delivery ]
+  workflow_dispatch:
 
 env:
   CR_PAT: ${{ secrets.CR_PAT }}
