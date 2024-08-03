@@ -3,10 +3,10 @@ name: Lint Python Code
 on:
   push:
     branches:
-      - continous_integration
+      - continuous_integration
   pull_request:
     branches:
-      - continous_integration
+      - continuous_integration
   workflow_dispatch:
 
 jobs:
