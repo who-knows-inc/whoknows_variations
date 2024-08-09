@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "ci"
+version = "0.1.0"
+description = ""
+authors = ["anderslatif <anderslatif@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^7.1.1"
+
+black = "^24.8.0"
+ruff = "^0.5.7"
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[[tool.poetry.packages]]
+include = "backend"
+from = "src"

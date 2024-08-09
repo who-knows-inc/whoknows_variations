@@ -10,7 +10,28 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  # test:
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
+
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v4
+  #       with:
+  #         python-version: '3.x'
+
+  #     - name: Install dependencies
+  #       run: |
+  #         python -m pip install --upgrade pip
+  #         pip install -r src/backend/requirements.txt
+
+  #     - name: Run tests
+  #       run: |
+  #         python src/backend/app_tests.py
+  
+  lint:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,13 +48,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r src/backend/requirements.txt
 
-      - name: Run tests
-        run: |
-          python src/backend/app_tests.py
-  
-      # - name: Install flake8
-      #   run: |
-      #     pip install flake8
-
-      # - name: Run flake8
-      #   run: flake8 src/backend
+      - name: Run linter
+        uses: chartboost/ruff-action@v1
+        with:
+          args: src/backend 
