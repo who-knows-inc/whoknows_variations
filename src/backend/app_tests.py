@@ -1,6 +1,7 @@
 import unittest
 import tempfile
 import app
+import os
 
 
 class WhoKnowsTestCase(unittest.TestCase):
@@ -15,7 +16,7 @@ class WhoKnowsTestCase(unittest.TestCase):
     def tearDown(self):
         """Clean up after each test. Delete the database file."""
         self.db.close()
-        self.db.unlink(self.db.name)
+        os.remove(self.db.name)
 
     # helper functions
 
