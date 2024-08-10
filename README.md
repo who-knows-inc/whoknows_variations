@@ -22,6 +22,7 @@ on:
 
 Currently the workflow is set to only trigger on this branch since the linting has only been setup with Python 3 here. 
 
+The testing and linting are two seperate jobs. The downside is that Github runners runs jobs in seperate virtual environments and it requires setting up the same environment twice. The upside is that they will run in parallel. 
 
 ## Testing and Linting
 
