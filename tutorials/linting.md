@@ -57,6 +57,8 @@ In root you can define your style rules in the `.flake8` file.
 
 [Black](https://black.readthedocs.io/en/stable/index.html) is a code formatter for Python. While Flake8 only points out the errors, Black fixes them. 
 
+Black is said to be an opinionated code formatter which means that it is not configurable.
+
 1. If you haven't installed from previously:
 
 ```bash
