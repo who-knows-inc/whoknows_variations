@@ -6,7 +6,7 @@ This branch focuses on end-to-end testing the Flask application using Playwright
 
 ## Initializing Playwright
 
-Playwright has already been initialized in this repository. This section is if you want to try fresh (you could do it in another folder in this very repository if you would like to test it out). Otherwise, jump to the next section.
+Playwright has already been initialized in this repository. This section is if you want to start out fresh (you could do it in another folder in this very repository). Otherwise, jump to the next section.
 
 
 Follow the tutorial from the documentation:
@@ -74,12 +74,11 @@ $ npx playwright test --headed --project=chromium
 Note that I specify it to only run in one browser, otherwise it will open a window for each browser.
 
 
-You can alternatively run the tests in `debug` mode, which allows you to step through tests:
+You can alternatively run the tests in `debug` mode, which allows you to step through the tests:
 
 ```bash
 $ npx playwright test --debug
 ```
-
 
 Running the test in UI mode allows you to see the browser and the test in action. Run `npx playwright test --ui`.
 
