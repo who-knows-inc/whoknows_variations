@@ -1,20 +1,25 @@
-# Flask Variations
+# Whoknows Variations
 
 This branch focuses on end-to-end testing the Flask application using Playwright. The tests are located in the `src/test/e2e` directory.
 
-## Getting started with Playwright
+---
+
+## Initializing Playwright
+
+Playwright has already been initialized in this repository. This section is if you want to try fresh (you could do it in another folder in this very repository if you would like to test it out). Otherwise, jump to the next section.
+
 
 Follow the tutorial from the documentation:
 
 https://playwright.dev/docs/intro
 
+As written in the documentation you can set it up (ensure that you are in the desired folder for where you want to test):
 
-## Running the tests
+```bash
+$ npm install -D playwright@latest
+```
 
-First install the dependencies in `src/test/e2e` using `npm install`.
-
-
-The CLI provides the following suggestions:
+Once finished, the CLI provides the following suggestions:
 
 ```text
  npx playwright test
@@ -36,11 +41,59 @@ The CLI provides the following suggestions:
     Auto generate tests with Codegen.
 ```
 
-## Making adjustments for our project
+---
 
-Make sure to run the Flask application. For instance, you could run `make run` in the `src` directory. 
+## Running the default test
 
-Update the baseURL key in `src/test/e2e/playwright.config.js`:
+The default test in [demo-todo-app.spec.js](/src/tests/e2e/tests/demo-todo-app.spec.js) has been moved from the `src/test/e2e/tests-examples` folder where it was initialized to. This enables it to run. Look at the test and make sure you understand what it does. 
+
+First `cd` to the `src/test/e2e` directory and install the node dependencies and install Plawright to get the different browser drivers: 
+
+```bash
+$ npm install
+$ npx playwright install
+```
+
+Then run the tests with:
+
+```bash
+$ npx playwright test
+```
+
+You can get an UI overview of all the tests by running:
+
+```bash
+$ npx playwright test --ui
+```
+
+If you would like to see the tests being performed live, you can run the tests in `headed` mode (headless means no browser window is shown, and this is how end-to-end tests usually run):
+
+```bash
+$ npx playwright test --headed --project=chromium
+```
+Note that I specify it to only run in one browser, otherwise it will open a window for each browser.
+
+
+You can alternatively run the tests in `debug` mode, which allows you to step through tests:
+
+```bash
+$ npx playwright test --debug
+```
+
+
+Running the test in UI mode allows you to see the browser and the test in action. Run `npx playwright test --ui`.
+
+---
+
+## Making the tests run for `whoknows`
+
+Feel free to move `demo-todo-app.spec.js` back to the `src/test/e2e/tests-examples` folder.
+
+In [basic-functionality.spec.js](/src/tests/e2e/tests/basic-functionality.spec.js) you can recomment the test. 
+
+The test requires our application to run. Make sure to run the Flask application. For instance, you could run `make run` in the `src` directory. 
+
+It knows to call our project on `http://localhost:8080` because the config file has been changed. If you would like to update the base url and por, then find the baseURL key in `src/test/e2e/playwright.config.js`:
 
 ```js
 import { defineConfig } from '@playwright/test';
@@ -53,7 +106,7 @@ export default defineConfig({
 });
 ```
 
-A basic test has been created in `basic-functionality.spec.js`. Run it:
+Now you can run the tests:
 
 ```bash
 $ npx playwright test
@@ -64,6 +117,8 @@ You can view a report of the test results:
 ```bash
 $ npx playwright show-report
 ```
+
+---
 
 ## Github Actions
 
