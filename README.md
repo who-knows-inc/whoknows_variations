@@ -178,7 +178,9 @@ permissions:
 
 Beware that it can sometimes take a few minutes for Github to update GH Pages. Or your browser might cache the old version of the report.
 
-The report should now be accessible at `https://<username>.github.io/<repository>/`. 
+The report should now be accessible at `https://<username>.github.io/<repository>`. 
+
+For this repository the page is on `https://who-knows-inc.github.io/whoknows_variations`.
 
 ## Further considerations
 
