@@ -1,4 +1,4 @@
-# Flask Variations - Continuous Deployment
+# Whoknows Variations - Continuous Deployment
 
 This tutorial focuses on how you can achieve Continuous Deployment of Docker images with Github Actions. 
 
