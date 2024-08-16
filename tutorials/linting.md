@@ -22,6 +22,8 @@ $ curl -sSL https://install.python-poetry.org | python3 -
 
 Everything has setup in the `pyproject.toml` file in the root of the project already.
 
+---
+
 ## Flake8
 
 ### What is flake8?
@@ -29,7 +31,6 @@ Everything has setup in the `pyproject.toml` file in the root of the project alr
 https://pypi.org/project/flake8/
 
 ### Running flake8 locally
-
 
 1. Ensure you have poetry installed:
 
@@ -53,7 +54,21 @@ $ poetry run flake8 src/backend
 
 In root you can define your style rules in the `.flake8` file.
 
-### Black
+---
+
+## Prospector
+
+Prospector is a "meta-tool" since it incorporates results from other static analysis tools such as [Pylint](https://pypi.org/project/pylint/), [pep8](https://peps.python.org/pep-0008/) and [McCabe complexity](https://pypi.org/project/mccabe/) and more.
+
+Run it: 
+
+```bash
+$ poetry run prospector
+```
+
+---
+
+## Black
 
 [Black](https://black.readthedocs.io/en/stable/index.html) is a code formatter for Python. While Flake8 only points out the errors, Black fixes them. 
 
@@ -71,7 +86,9 @@ $ poetry install
 $ poetry run black src/backend
 ```
 
-### Ruff
+---
+
+## Ruff
 
 As of time of writing [Ruff](https://github.com/astral-sh/ruff) is the new toy that combines linting and code formatting. But a major reason for its rise is how much faster it is compared to other options. 
 
