@@ -113,7 +113,7 @@ def register():
     return render_template('register.html')
 
 
-@app.route('/logout')
+@app.route('/api/logout')
 def logout():
     """Logs the user out."""
     flash('You were logged out')
