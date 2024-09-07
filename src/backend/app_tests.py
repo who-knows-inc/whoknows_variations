@@ -46,7 +46,7 @@ class WhoKnowsTestCase(unittest.TestCase):
 
     def logout(self):
         """Helper function to logout."""
-        return self.app.get('/logout', follow_redirects=True)
+        return self.app.get('/api/logout', follow_redirects=True)
 
     # testing functions
     def test_register(self):
