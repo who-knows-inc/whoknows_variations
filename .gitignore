@@ -165,3 +165,7 @@ cython_debug/
 # Added by cargo
 
 /target
+
+
+# legacy project files
+src/backend/
