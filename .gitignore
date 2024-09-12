@@ -168,4 +168,4 @@ cython_debug/
 
 
 # legacy project files
-src/backend/
+src/legacy_backend/
