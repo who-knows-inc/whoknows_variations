@@ -1,6 +1,7 @@
 services:
   db:
-    image: postgres:16
+    container_name: whoknows-db
+    image: postgres:latest
     restart: always
     ports:
       - "5432:5432"
@@ -9,7 +10,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
     volumes:
-      - ./migrations:/docker-entrypoint-initdb.d
+      - ./migrations:/docker-entrypoint-initdb.d/schema.sql
       -  postgres_data:/var/lib/postgresql/data
 
 volumes:
