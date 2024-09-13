@@ -1,6 +1,7 @@
 #[macro_use]
 extern crate rocket;
 
+use rocket::fs::{relative, FileServer};
 use rocket_dyn_templates::{context, Template};
 
 #[get("/")]
@@ -32,5 +33,6 @@ fn search() -> Template {
 fn rocket() -> _ {
     rocket::build()
         .mount("/", routes![index, about, login, register, search])
+        .mount("/static", FileServer::from(relative!("static")))
         .attach(Template::fairing())
 }
