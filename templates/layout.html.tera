@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<title>¿Who Knows?</title>
+<link rel="stylesheet" type="text/css" href="/static/style.css">
+<div class="page">
+  <div class="navigation">
+  <nav>
+    <h1><a id="nav-logo" href="/">¿Who Knows?</a></h1>
+    {% if user %}
+    <a id="nav-logout" href="/logout">Log out [{{ user.username }}]</a>
+    {% else %}
+    <a id="nav-login" href="/login">Log in</a>
+    <a id="nav-register" href="/register">Register</a>
+    {% endif %}
+  </nav>
+  </div>
+  
+  <div class="body">
+  {% block body %}{% endblock %}
+  </div>
+  <div class="footer">
+    <span>¿Who Knows? &copy; 2009</span>
+    <a href="/about">About</a>
+  </div>
+</div>
+</html>
