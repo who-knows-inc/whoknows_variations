@@ -1,4 +1,4 @@
-
+{% extends "layout" %}
 {% block content %}
 <h1>Who Knows?</h1>
 <p>This is the homepage</p> 
