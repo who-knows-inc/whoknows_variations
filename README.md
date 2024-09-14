@@ -1,24 +1,55 @@
-# Whoknows Variations
+# WhoKnows Variations
 
-This is the Whoknows variations repository. It is not meant for production as it contains several security vulnerabilities and problematic parts on purpose. 
+_This repository is for educational purposes and is not meant for production use. It intentionally contains several security vulnerabilities and problematic parts to facilitate learning._
 
-## How to get started
+## Getting Started
 
-Each branch is a tutorial in a different topic based on the same Flask application as in the `main` branch. 
+This project is structured into various branches, each providing a tutorial on a different topic using the same base Rocket application as the `main` branch. Follow the instructions below to set up your development environment and start working with the repository.
 
-One way to follow along is by:
+### Prerequisites
 
-1. Forking the repository to your own account.
+Ensure you have the following installed:
 
-2. Cloning the repository to your local machine.
+- `git`
+- `rustup`
 
-3. Checking out the branch you are interested in (e.g. `git checkout <branch_name>`).
+Make sure you have Rust installed by running `rustup --version`. If you don't have Rust installed, follow the instructions on the [official Rust website](https://www.rust-lang.org/tools/install).
+The preffered way to install Rust is using `rustup`.
 
-4. Following the instructions in the README of the branch.
+### Installation
 
-5. You can now push changes to your own repository. 
+#### Step 1: Clone the repository
 
-## Pull requests
+```bash
+    https :
+    git clone https://github.com/MadeInChina-DevOps/whoknows_nooneknows.git
+
+    ssh :
+    git clone git@github.com:MadeInChina-DevOps/whoknows_nooneknows.git
+```
+
+#### Step 2: run the application
+
+```bash
+    cd whoknows_nooneknows
+    cargo run
+```
+
+#### Step 3: open the application in your browser
+
+Open your browser and navigate to `http://localhost:8000`
+
+### Running the tests
+
+```bash
+    cd whoknows_nooneknows
+    cargo test
+```
+
+## Contributing
 
 If you have any suggestions or improvements to the tutorials, feel free to open a pull request.
 
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
