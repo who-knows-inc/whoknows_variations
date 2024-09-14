@@ -7,7 +7,6 @@ on:
 jobs:
   issue_opened:
     runs-on: ubuntu-latest
-    # Should make a comment on the issue sayin thanks for opening an issue
     steps:
       - name: Create comment
         uses: peter-evans/create-or-update-comment@v1
@@ -15,3 +14,4 @@ jobs:
           issue-number: ${{ github.event.issue.number }}
           body: |
             Thanks for opening an issue! We'll get to it as soon as possible.
+          reactions: "+1"
