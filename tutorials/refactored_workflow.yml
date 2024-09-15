@@ -1,0 +1,61 @@
+name: Publish
+
+on:
+  workflow_run:
+    workflows: ["Docker Build and Push"]
+    types:
+      - completed
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      # SSH credentials
+      SSH_USER: ${{ secrets.SSH_USER }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+
+      # Docker configurations
+      DOCKER_NETWORK_NAME: my_network
+
+      # Server container configurations
+      DOCKER_SERVER_IMAGE_NAME: ghcr.io/who-knows-inc/whoknows_variations_server:latest
+      DOCKER_SERVER_CONTAINER_NICKNAME: whoknows_flask
+      DOCKER_SERVER_PORT_MAPPING: 8080:8080
+
+      # Nginx container configurations
+      DOCKER_NGINX_IMAGE_NAME: ghcr.io/who-knows-inc/whoknows_variations_nginx:latest
+      DOCKER_NGINX_CONTAINER_NICKNAME: whoknows_nginx
+      DOCKER_NGINX_PORT_MAPPING: 80:80
+
+    steps:
+      - name: Add SSH key to runner
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/ssh_key
+          chmod 600 ~/.ssh/ssh_key
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Create .env file
+        run: |
+          echo "GREETING=Hello from Github Action" >> .env
+
+      - name: Transfer .env file to server
+        run: |
+          scp -i ~/.ssh/ssh_key -o StrictHostKeyChecking=no .env $SSH_USER@$SSH_HOST:.env
+
+      - name: Deploy to server
+        run: |
+          ssh -i ~/.ssh/ssh_key -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << EOF
+          docker network create $DOCKER_NETWORK_NAME || true
+          docker pull $DOCKER_SERVER_IMAGE_NAME
+          docker rm -f $DOCKER_SERVER_CONTAINER_NICKNAME || true
+          docker run -d --env-file .env --network $DOCKER_NETWORK_NAME -p $DOCKER_SERVER_PORT_MAPPING --name $DOCKER_SERVER_CONTAINER_NICKNAME $DOCKER_SERVER_IMAGE_NAME
+          docker pull $DOCKER_NGINX_IMAGE_NAME
+          docker rm -f $DOCKER_NGINX_CONTAINER_NICKNAME || true
+          docker run -d --network $DOCKER_NETWORK_NAME -p $DOCKER_NGINX_PORT_MAPPING --name $DOCKER_NGINX_CONTAINER_NICKNAME $DOCKER_NGINX_IMAGE_NAME
+          EOF
