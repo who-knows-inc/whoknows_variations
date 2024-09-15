@@ -1,0 +1,32 @@
+name: Docker Build
+
+on:
+  push:
+    branches: [ continuous_deployment ]
+  pull_request:
+    branches: [ continuous_deployment ]
+  workflow_dispatch:
+
+env:
+  CR_PAT: ${{ secrets.CR_PAT }}
+  DOCKER_GITHUB_USERNAME: ${{ secrets.DOCKER_GITHUB_USERNAME }}
+  ENV_GREETING: ${{ secrets.ENV_GREETING }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check Out Repository
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Log in to GitHub Container Registry
+      run: echo ${{ env.CR_PAT }} | docker login ghcr.io -u ${{ env.DOCKER_GITHUB_USERNAME }} --password-stdin
+
+    - name: Build and Push Docker Images
+      working-directory: ./src
+      run: |
+        docker buildx bake -f docker-compose.prod.yml --push

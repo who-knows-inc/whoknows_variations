@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  whoknows_flask:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    image: ghcr.io/who-knows-inc/whoknows_variations_server:latest
+    env_file:
+      - backend/.env
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend:/usr/src/app  # Bind mount for live development
+    environment:
+      - FLASK_ENV=development
+    networks:
+      - my_network
+
+  whoknows_nginx:
+    build:
+      context: ./network
+      dockerfile: Dockerfile
+    image: ghcr.io/who-knows-inc/whoknows_variations_nginx:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - whoknows_flask
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge

@@ -73,6 +73,17 @@ def after_request(response):
     g.db.close()
     return response
 
+################################################################################
+# Environment Variables
+################################################################################
+
+from dotenv import load_dotenv
+load_dotenv()
+
+@app.route('/envgreeting')
+def home():
+    return os.getenv('GREETING')
+
 
 ################################################################################
 # Page Routes
