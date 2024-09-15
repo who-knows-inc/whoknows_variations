@@ -1,17 +1,22 @@
-name: publish
+name: Publish
 
 on:
-  push:
-    branches: "main"
+  workflow_run:
+    workflows: ["Docker Build and Push"]
+    types:
+      - completed
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
-  # change github.actor if the image is owned by an organization
-  IMAGE_NAME: ${{ github.actor }}/full-pipeline:latest
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
+    env:
+      # Make sure that the SSH_USER has permission to run docker
+      SSH_USER: ${{ secrets.SSH_USER }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
 
     steps:
       - name: Add SSH key to runner
@@ -22,14 +27,30 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
+      - name: Create .env file
+        run: |
+          echo "GREETING=Hello from Github Action" >> .env
+
+
+      - name: Transfer .env file to server
+        run: |
+          scp -i ~/.ssh/ssh_key -o StrictHostKeyChecking=no .env $SSH_USER@$SSH_HOST:.env
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+
       - name: Deploy to server
         run: |
           ssh -i ~/.ssh/ssh_key -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << 'EOF'
-          docker pull nginx
-          docker rm -f hello-nginx || true
-          docker run -d -p 80:80 --name hello-nginx nginx
+          docker network create my_network || true
+          docker pull ghcr.io/who-knows-inc/whoknows_variations_server:latest
+          docker rm -f whoknows_flask || true
+          docker run -d --env-file .env --network my_network -p 8080:8080 --name whoknows_flask ghcr.io/who-knows-inc/whoknows_variations_server:latest
+          docker pull ghcr.io/who-knows-inc/whoknows_variations_nginx:latest
+          docker rm -f whoknows_nginx || true
+          docker run -d --network my_network -p 80:80 --name whoknows_nginx ghcr.io/who-knows-inc/whoknows_variations_nginx:latest
           EOF
         env:
-          # Make sure that the SSH_USER has permission to run docker
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
+          
