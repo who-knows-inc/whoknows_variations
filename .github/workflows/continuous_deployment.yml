@@ -5,6 +5,8 @@ on:
     workflows: ["Docker Build and Push"]
     types:
       - completed
+    branches:
+      - continuous_deployment
   workflow_dispatch:
 
 env:
