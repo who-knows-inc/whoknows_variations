@@ -1,5 +1,10 @@
 name: Docker Build and Push
 
+# this is necessary to allow it to trigger the continuous_deployment workflow
+permissions:
+  contents: read
+  actions: write
+
 on:
   push:
     branches: [ continuous_deployment ]
