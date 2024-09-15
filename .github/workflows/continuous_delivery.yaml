@@ -1,0 +1,11 @@
+name: Docker Build and Push
+
+# in order for the workflow in `continuous_delivery` branch to be triggered after this workflow's completion, 
+# the workflow by the name `Docker Build and Push` must be defined in the default branch (`main`)
+on:
+  workflow_dispatch:
+jobs:
+  dummy_job:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This is a dummy job"
