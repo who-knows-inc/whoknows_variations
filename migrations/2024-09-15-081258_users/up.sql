@@ -11,13 +11,3 @@ CREATE TABLE IF NOT EXISTS users (
 INSERT INTO users (username, email, password) 
     VALUES ('admin', 'keamonk1@stud.kea.dk', '5f4dcc3b5aa765d61d8327deb882cf99');
 
-
-DROP TABLE IF EXISTS pages;
-
-CREATE TABLE IF NOT EXISTS pages (
-    title TEXT PRIMARY KEY,
-    url TEXT NOT NULL UNIQUE,
-    language TEXT NOT NULL DEFAULT 'en' CHECK (language IN ('en', 'da')),
-    last_updated TIMESTAMP,
-    content TEXT NOT NULL
-);
