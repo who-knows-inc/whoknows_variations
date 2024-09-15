@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ continuous_deployment ]
   workflow_run:
-      branches: [ continuous_deployment ]
+    branches: [ continuous_deployment ]
   workflow_dispatch:
 
 env:
