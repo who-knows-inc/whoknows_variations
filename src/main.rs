@@ -2,37 +2,23 @@
 extern crate rocket;
 
 use rocket::fs::{relative, FileServer};
-use rocket_dyn_templates::{context, Template};
+use rocket_dyn_templates::Template;
 
-#[get("/")]
-fn index() -> Template {
-    Template::render("index", context! { field: "value" })
-}
-
-#[get("/about")]
-fn about() -> Template {
-    Template::render("about", context! { field: "value" })
-}
-
-#[get("/login")]
-fn login() -> Template {
-    Template::render("login", context! { field: "value" })
-}
-
-#[get("/register")]
-fn register() -> Template {
-    Template::render("register", context! { field: "value" })
-}
-
-#[get("/search")]
-fn search() -> Template {
-    Template::render("search", context! { field: "value" })
-}
+pub mod routes;
 
 #[launch]
 fn rocket() -> _ {
     rocket::build()
-        .mount("/", routes![index, about, login, register, search])
+        .mount(
+            "/",
+            routes![
+                routes::pages::index,
+                routes::pages::about,
+                routes::pages::login,
+                routes::pages::register,
+                routes::pages::search
+            ],
+        )
         .mount("/static", FileServer::from(relative!("static")))
         .attach(Template::fairing())
 }
