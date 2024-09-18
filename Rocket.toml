@@ -18,7 +18,7 @@ log = "normal"
 limits = { forms = 32768 }
 
 [production]
-address = "0.0.0.0"
+adress = "127.0.0.1"
 port = 8000
 keep_alive = 5
 read_timeout = 5
