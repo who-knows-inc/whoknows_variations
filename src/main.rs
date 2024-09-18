@@ -4,6 +4,7 @@ extern crate rocket;
 use rocket::fs::{relative, FileServer};
 use rocket_dyn_templates::Template;
 
+pub mod db;
 pub mod routes;
 
 #[launch]
