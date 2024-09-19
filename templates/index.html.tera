@@ -1,7 +1,7 @@
 {% extends "layout" %}
 {% block title %}Home{% endblock %}
 {% block body %} 
-<h1>Who Knows?</h1>
+<h1>Who Knows? No one knows</h1>
 <p>This is the homepage</p>
 
 {% endblock %}
