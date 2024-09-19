@@ -1,0 +1,37 @@
+name: Deploy
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          override: true
+
+      - name: Install cargo-zigbuild
+        run: cargo install cargo-zigbuild
+
+      - name: Build and deploy
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+          DEPLOY_DIR: ${{ secrets.DEPLOY_DIR }}
+          VM_USER: ${{ secrets.VM_USER }}
+          VM_HOST: ${{ secrets.VM_HOST }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$DEPLOY_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          # Ensure deploy script has execution permissions
+          chmod +x dev/kea/devOps/legacy_project/whoknows_nooneknows/deploy.sh
+          # Run deploy script
+          dev/kea/devOps/legacy_project/whoknows_nooneknows/deploy.sh

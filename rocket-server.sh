@@ -1,5 +1,6 @@
 ## This was used under the creation of the Hetzner Cloud Server
 ## and is just here to show how we configured the server
+
 #cloud-config
 
 # Add a user named 'example'
@@ -63,3 +64,6 @@ runcmd:
   # enable auditd
   - sudo systemctl enable auditd
   - sudo systemctl start auditd
+
+  # install nginx
+  - sudo apt install nginx -y
