@@ -9,7 +9,7 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 tera = "1.10.0"
 bcrypt = "0.15.0"
-diesel = { version = "2.1.6", features = ["postgres"] }
+sqlx = { version = "0.6.2", features = ["runtime-tokio-rustls", "postgres", "migrate"] }
 dotenvy = "0.15"
 
 [dependencies.rocket_dyn_templates]
@@ -23,7 +23,7 @@ features = ["tera_templates", "serve", "json"]
 
 [dependencies.rocket_db_pools]
 version = "0.2.0"
-features = ["diesel_postgres"]
+features = ["sqlx_postgres"]
 default-features = false
 
 [default.databases.whoknows]

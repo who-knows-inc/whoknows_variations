@@ -1,3 +1,4 @@
+-- Add migration script here
 DROP TABLE IF EXISTS pages;
 
 CREATE TABLE IF NOT EXISTS pages (
