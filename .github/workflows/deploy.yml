@@ -18,9 +18,6 @@ jobs:
           profile: minimal
           override: true
 
-      - name: Install zig 
-        run: sudo apt install zig -y
-
       - name: Install cargo-zigbuild
         run: cargo install cargo-zigbuild
 
@@ -33,7 +30,7 @@ jobs:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
-          source: "whoknows_nooneknows.tar.gz"
+          source: ${{ secrets.PKG }}.tar.gz
           target: ${{ secrets.DEPLOY_DIR }}
 
           # extract and run the app on the VM
@@ -45,6 +42,6 @@ jobs:
           key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
           script: |
             cd ${{ secrets.DEPLOY_DIR }}
-            tar -xzvf whoknows_nooneknows.tar.gz
-            rm whoknows_nooneknows.tar.gz
-            systemctl restart whoknows.service
+            tar -xzvf ${{ secrets.PKG }}.tar.gz
+            rm ${{ secrets.PKG }}.tar.gz
+            systemctl restart ${{ secrets.SERVICE_NAME }}.service
