@@ -19,7 +19,7 @@ jobs:
           override: true
 
       - name: Install zig
-        run: sudo snap install zig --classic
+        run: snap install --beta zig
 
       - name: Install cargo-zigbuild
         run: cargo install cargo-zigbuild
