@@ -1,0 +1,49 @@
+name: Deploy
+
+on:
+  release:
+    types: [published]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          profile: minimal
+          override: true
+
+      - name: Install zig
+        run: sudo snap install zig --classic --beta
+
+      - name: Install cargo-zigbuild
+        run: cargo install cargo-zigbuild
+
+      - name: Build the application with deploy.sh
+        run: bash deploy.sh
+
+      - name: copy the tarball to the remote server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+          source: ${{ secrets.PKG }}.tar.gz
+          target: ${{ secrets.DEPLOY_DIR }}
+
+          # extract and run the app on the VM
+      - name: extract and run the app on the VM
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+          script: |
+            cd ${{ secrets.DEPLOY_DIR }}
+            tar -xzvf ${{ secrets.PKG }}.tar.gz
+            rm ${{ secrets.PKG }}.tar.gz
+            sudo systemctl restart ${{ secrets.SERVICE_NAME }}.service
