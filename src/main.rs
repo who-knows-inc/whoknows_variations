@@ -1,14 +1,18 @@
 #[macro_use]
 extern crate rocket;
 
-use rocket::fs::{relative, FileServer};
+use dotenvy::dotenv;
+use rocket::fs::FileServer;
 use rocket_dyn_templates::Template;
+use std::env;
 
-pub mod db;
 pub mod routes;
 
 #[launch]
 fn rocket() -> _ {
+    dotenv().ok();
+    let static_path = env::var("STATIC_PATH").unwrap_or("/var/www/static".to_string());
+
     rocket::build()
         .mount(
             "/",
@@ -20,6 +24,6 @@ fn rocket() -> _ {
                 routes::pages::search
             ],
         )
-        .mount("/static", FileServer::from(relative!("static")))
+        .mount("/static", FileServer::from(static_path))
         .attach(Template::fairing())
 }
