@@ -19,6 +19,7 @@ async fn rocket() -> _ {
     rocket::build()
         .attach(Template::fairing())
         .manage(pool)
+        .mount("/static", FileServer::from(static_path))
         .mount(
             "/",
             routes![
@@ -29,5 +30,4 @@ async fn rocket() -> _ {
                 routes::pages::search
             ],
         )
-        .mount("/static", FileServer::from(static_path))
 }
