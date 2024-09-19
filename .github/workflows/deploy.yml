@@ -1,9 +1,9 @@
 name: Deploy
 
 on:
-  release:
-    types: [published]
-
+  push:
+    branches:
+      - main
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -21,17 +21,26 @@ jobs:
       - name: Install cargo-zigbuild
         run: cargo install cargo-zigbuild
 
-      - name: Build and deploy
-        env:
-          DEPLOY_KEY: ${{ secrets.DEPLOY_PRIVATE_KEY }}
-          DEPLOY_DIR: ${{ secrets.DEPLOY_DIR }}
-          VM_USER: ${{ secrets.VM_USER }}
-          VM_HOST: ${{ secrets.VM_HOST }}
-        run: |
-          mkdir -p ~/.ssh
-          echo "$DEPLOY_KEY" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          # Ensure deploy script has execution permissions
-          chmod +x dev/kea/devOps/legacy_project/whoknows_nooneknows/deploy.sh
-          # Run deploy script
-          dev/kea/devOps/legacy_project/whoknows_nooneknows/deploy.sh
+      - name: Build the application with deploy.sh
+        run: bash deploy.sh
+
+      - name: copy the tarball to the remote server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+          source: "whoknows_nooneknows.tar.gz"
+          target: ${{ secrets.DEPLOY_DIR }}
+
+          # extract and run the app on the VM
+      - name: extract and run the app on the VM
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+          script: |
+            cd ${{ secrets.DEPLOY_DIR }}
+            tar xzvf whoknows_nooneknows.tar.gz
+            sudo systemctl restart whoknows.service
