@@ -47,4 +47,4 @@ jobs:
             cd ${{ secrets.DEPLOY_DIR }}
             tar -xzvf ${{ secrets.PKG }}.tar.gz
             rm ${{ secrets.PKG }}.tar.gz
-            systemctl restart ${{ secrets.SERVICE_NAME }}.service
+            sudo systemctl restart ${{ secrets.SERVICE_NAME }}.service
