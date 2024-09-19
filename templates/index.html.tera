@@ -2,6 +2,6 @@
 {% block title %}Home{% endblock %}
 {% block body %} 
 <h1>Who Knows? No one knows</h1>
-<p>This is the homepage</p>
+<p>This is the homepage. Search for anything you want to know.</p>
 
 {% endblock %}

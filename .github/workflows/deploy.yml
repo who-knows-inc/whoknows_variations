@@ -18,6 +18,9 @@ jobs:
           profile: minimal
           override: true
 
+      - name: Install zig 
+        run: sudo apt install zig -y
+
       - name: Install cargo-zigbuild
         run: cargo install cargo-zigbuild
 
@@ -42,5 +45,6 @@ jobs:
           key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
           script: |
             cd ${{ secrets.DEPLOY_DIR }}
-            tar xzvf whoknows_nooneknows.tar.gz
-            sudo systemctl restart whoknows.service
+            tar -xzvf whoknows_nooneknows.tar.gz
+            rm whoknows_nooneknows.tar.gz
+            systemctl restart whoknows.service
