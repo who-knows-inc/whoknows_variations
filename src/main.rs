@@ -1,6 +1,7 @@
 #[macro_use]
 extern crate rocket;
 
+pub mod api;
 pub mod db;
 pub mod routes;
 
@@ -30,4 +31,5 @@ async fn rocket() -> _ {
                 routes::pages::search
             ],
         )
+        .mount("/api", routes![api::login::login, api::register::register])
 }
