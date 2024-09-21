@@ -4,6 +4,7 @@ extern crate rocket;
 pub mod api;
 pub mod db;
 pub mod routes;
+pub mod security;
 
 use dotenvy::dotenv;
 use rocket::fs::FileServer;
