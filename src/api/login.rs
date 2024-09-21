@@ -1,15 +1,18 @@
+use rocket::form::Form;
+use rocket::response::Redirect;
 use rocket::serde::json::Json;
 use rocket::State;
 use serde::Serialize;
 use sqlx::PgPool;
 
+use crate::security::security::verify_password;
 #[derive(Serialize)]
 pub struct LoginResponse {
     pub success: bool,
     pub message: String,
 }
 
-#[derive(serde::Deserialize)]
+#[derive(FromForm)]
 pub struct LoginRequest {
     pub username: String,
     pub password: String,
@@ -24,7 +27,10 @@ pub struct User {
 }
 
 #[post("/login", data = "<login_request>")]
-pub async fn login(login_request: Json<LoginRequest>, pool: &State<PgPool>) -> Json<LoginResponse> {
+pub async fn login(
+    login_request: Form<LoginRequest>,
+    pool: &State<PgPool>,
+) -> Result<Redirect, Json<LoginResponse>> {
     let login_request = login_request.into_inner();
     let mut conn = pool.acquire().await.unwrap();
 
@@ -37,15 +43,12 @@ pub async fn login(login_request: Json<LoginRequest>, pool: &State<PgPool>) -> J
     .await
     .unwrap();
 
-    if user.password == login_request.password {
-        Json(LoginResponse {
-            success: true,
-            message: "Login successful".to_string(),
-        })
+    if verify_password(&user.password, &login_request.password) {
+        Ok(Redirect::to("/"))
     } else {
-        Json(LoginResponse {
+        Err(Json(LoginResponse {
             success: false,
             message: "Invalid username or password".to_string(),
-        })
+        }))
     }
 }
