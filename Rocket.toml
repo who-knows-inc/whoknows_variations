@@ -1,27 +1,32 @@
-[development]
-database_url = "postgres://postgres:postgres@localhost/postgres"
-address = "localhost"
-port = 8000
+[global]
 keep_alive = 5
 read_timeout = 5
 write_timeout = 5
-log = "normal"
 limits = { forms = 32768 }
+
+[default]
+address = "localhost"
+port = 8000
+log = "normal"
+
+[default.databases]
+whoknows = { url = "postgres://postgres:postgres@localhost/whoknows" }
+
+[development]
+log = "normal"
 
 [staging]
 address = "0.0.0.0"
 port = 8000
-keep_alive = 5
-read_timeout = 5
-write_timeout = 5
 log = "normal"
-limits = { forms = 32768 }
+
+[staging.databases]
+whoknows = { url = "postgres://postgres:postgres@staging-host/whoknows" }
 
 [production]
-adress = "127.0.0.1"
+address = "127.0.0.1"
 port = 8000
-keep_alive = 5
-read_timeout = 5
-write_timeout = 5
 log = "critical"
-limits = { forms = 32768 }
+
+[production.databases]
+whoknows = { url = ${PROD_DATABASE_URL} }
