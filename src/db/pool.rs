@@ -1,20 +1,11 @@
-use dotenvy::dotenv;
-use std::env;
-
 use sqlx::migrate::Migrator;
 use sqlx::postgres::PgPool;
 
 static MIGRATOR: Migrator = sqlx::migrate!("./migrations");
 
-pub async fn get_pool() -> PgPool {
-    // Load the environment variables from the .env file
-    dotenv().ok();
-
-    // Get the database URL from the environment variable
-    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-
-    // Connect to the database using the URL
-    let pool = PgPool::connect(&database_url)
+pub async fn get_pool(database_url: &str) -> PgPool {
+    // Connect to the database using the URL provided
+    let pool = PgPool::connect(database_url)
         .await
         .expect("Failed to create pool");
 

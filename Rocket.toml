@@ -5,12 +5,12 @@ write_timeout = 5
 limits = { forms = 32768 }
 
 [default]
-address = "localhost"
+address = "127.0.0.1"  # Change "localhost" to "127.0.0.1"
 port = 8000
 log = "normal"
 
 [default.databases]
-whoknows = { url = "postgres://postgres:postgres@localhost/whoknows" }
+whoknows = { url = "postgres://postgres:postgres@localhost/postgres" }
 
 [development]
 log = "normal"
@@ -29,4 +29,4 @@ port = 8000
 log = "critical"
 
 [production.databases]
-whoknows = { url = ${PROD_DATABASE_URL} }
+whoknows = { url = { env = "PROD_DATABASE_URL" } }
