@@ -14,14 +14,16 @@ use std::env;
 #[launch]
 async fn rocket() -> _ {
     dotenv().ok();
-    let static_path = env::var("STATIC_PATH").unwrap_or("/var/www/whoknows/static".to_string());
 
     let pool = db::pool::get_pool().await;
 
     rocket::build()
         .attach(Template::fairing())
         .manage(pool)
-        .mount("/static", FileServer::from(static_path))
+        .mount(
+            "/static",
+            FileServer::from(env::var("STATIC_PATH").unwrap()),
+        )
         .mount(
             "/",
             routes![
