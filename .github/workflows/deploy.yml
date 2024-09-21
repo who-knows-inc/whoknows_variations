@@ -3,9 +3,13 @@ name: Deploy
 on:
   release:
     types: [published]
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      SQLX_OFFLINE: 'true'  # Ensure offline mode is enabled
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -26,6 +30,7 @@ jobs:
       - name: Build the application with deploy.sh
         run: bash deploy.sh
 
+      # ... rest of your steps ...
       - name: copy the tarball to the remote server
         uses: appleboy/scp-action@master
         with:
