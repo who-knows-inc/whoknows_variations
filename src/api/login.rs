@@ -31,9 +31,12 @@ pub async fn login(
     login_request: Form<LoginRequest>,
     pool: &State<PgPool>,
 ) -> Result<Redirect, Json<LoginResponse>> {
+    // Get the login request from the form data
     let login_request = login_request.into_inner();
+    // Acquire a connection from the pool
     let mut conn = pool.acquire().await.unwrap();
 
+    // Query the database for the user
     let user = sqlx::query_as!(
         User,
         "SELECT * FROM users WHERE username = $1",
@@ -43,6 +46,7 @@ pub async fn login(
     .await
     .unwrap();
 
+    // Verify the password
     if verify_password(&user.password, &login_request.password) {
         Ok(Redirect::to("/"))
     } else {
