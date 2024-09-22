@@ -1,0 +1,45 @@
+name: Infrastructure as Code Linting
+
+on: [push, pull_request]
+
+jobs:
+  iac-security:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.0.11
+
+    - name: Install TFLint
+      run: |
+        curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+
+    - name: Run TFLint
+      run: tflint
+      working-directory: infrastructure
+
+    - name: Install Checkov
+      run: pip install checkov
+
+    - name: Run Checkov
+      run: checkov -d .
+      working-directory: infrastructure
+
+    - name: Install tfsec
+      run: |
+        curl -L "$(curl -s https://api.github.com/repos/aquasecurity/tfsec/releases/latest | jq -r '.assets[] | select(.name | test("tfsec-linux-amd64")) | .browser_download_url')" -o tfsec
+        chmod +x tfsec
+        sudo mv tfsec /usr/local/bin/
+
+    - name: Run tfsec for static analysis
+      run: tfsec
+      working-directory: infrastructure
+
+    - name: Run Terraform Validate
+      run: terraform validate
+      working-directory: infrastructure
