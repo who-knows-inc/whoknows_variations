@@ -1,17 +1,44 @@
-#[macro_use] extern create rocket;
-
-use rocket_contrib::templates::Template;
-use sqlx::postgres::PgPool;
+use rocket::form::Form;  
+use rocket::serde::json::Json;
 use rocket::State;
-use std::sync::Arc;
-use rocket_contrib::json::Json;
-use std::collections::HashMap;
+use serde::Serialize;
+use sqlx::postgres::PgPool;
 
-mod db;
+#[derive(Serialize, sqlx::FromRow)]
+pub struct SearchResult {
+    pub title: String,
+    pub url: String,
+    pub description: Option<String>,
+}
 
-#[derive(Serialize)]
-struct SearchResult {
-    title: String,
-    url: String,
-    description: String,
+#[derive(FromForm)]  
+pub struct SearchData {
+    pub q: Option<String>,
+    pub language: Option<String>,
+}
+
+#[rocket::post("/search", data = "<search_data>")]
+pub async fn api_search(
+    search_data: Form<SearchData>,  
+    db: &State<PgPool>
+) -> Json<Vec<SearchResult>> {
+    let language = search_data.language.clone().unwrap_or_else(|| "en".to_string());
+    let query_string = match &search_data.q {
+        Some(q) if !q.is_empty() => format!("%{}%", q),
+        _ => return Json(vec![]),
+    };
+
+    let search_results: Vec<SearchResult> = sqlx::query_as::<_, SearchResult>(
+        "SELECT title, url, description FROM pages WHERE language = $1 AND content LIKE $2"
+    )
+    .bind(&language)
+    .bind(&query_string)
+    .fetch_all(db.inner())
+    .await
+    .unwrap_or_else(|err| {
+        eprintln!("Database query error: {:?}", err);
+        vec![]
+    });
+
+    Json(search_results)
 }

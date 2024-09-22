@@ -7,7 +7,7 @@
   <nav>
     <h1><a id="nav-logo" href="/">¿Who Knows?</a></h1>
     {% if user %}
-    <a id="nav-logout" href="/logout">Log out [{{ user.username }}]</a>
+    <a id="nav-logout" href="/api/logout">Log out [{{ user.username }}]</a>
     {% else %}
     <a id="nav-login" href="/login">Log in</a>
     <a id="nav-register" href="/register">Register</a>

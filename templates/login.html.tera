@@ -5,10 +5,10 @@
   {% if error %}<div class="error"><strong>Error:</strong> {{ error }}</div>{% endif %}
   <form action="/api/login" method="POST">
     <dl>
-      <dt>Username:
-      <dd><input type="text" name="username" size="30" value="{{ request.form.username }}">
-      <dt>Password:
-      <dd><input type="password" name="password" size="30">
+      <dt>Username:</dt>
+      <dd><input type="text" name="username" size="30" value="{{ username | default(value='') }}"></dd>
+      <dt>Password:</dt>
+      <dd><input type="password" name="password" size="30"></dd>
     </dl>
     <div class="actions"><input type="submit" value="Log In"></div>
   </form>

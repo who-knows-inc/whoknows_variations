@@ -1,7 +1,15 @@
 {% extends "layout" %}
 {% block title %}Home{% endblock %}
 {% block body %} 
-<h1>Who Knows? No one knows</h1>
+<h1>Who Knows? No one knows. Do you know?</h1>
 <p>This is the homepage. Search for anything you want to know.</p>
+
+<div>
+    <form action="/api/search" method="post">
+        <input type="text" name="q" placeholder="Search...">
+        <input type="hidden" name="language" value="en">
+        <button type="submit">Search</button>
+    </form>
+</div>
 
 {% endblock %}
