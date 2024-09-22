@@ -5,11 +5,14 @@ extern crate rocket;
 
 pub mod api;
 pub mod db;
+pub mod fairings;
+pub mod models;
 pub mod routes;
 pub mod security;
 
 use db::pool::get_pool;
 use dotenvy::dotenv;
+use fairings::connection_checker::DbConnectionChecker;
 use rocket::fs::FileServer;
 use rocket_dyn_templates::Template;
 use std::env;
@@ -25,6 +28,7 @@ async fn rocket() -> _ {
     // Build and return the Rocket instance
     rocket::build()
         .attach(Template::fairing())
+        .attach(DbConnectionChecker)
         .manage(pool)
         .mount(
             "/static",
@@ -40,5 +44,5 @@ async fn rocket() -> _ {
                 routes::pages::search,
             ],
         )
-        .mount("/api", routes![api::login::login, api::register::register])
+        .mount("/api", routes![api::login::login, api::login::logout ,api::register::register])
 }
