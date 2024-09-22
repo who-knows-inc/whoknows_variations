@@ -1,33 +1,14 @@
 # Whoknows Variations - Continuous Deployment
 
-This tutorial focuses on how you can achieve TLS with Nginx. 
-
----
-
-## Prerequisites
-
-The assumption is that you have a code for https://www.one.com and the tutorial will show you how to you register your domain. 
-
-If you have a domain registered with a different provider, then feel free to skip this part.
+This tutorial focuses on how to perform various securits test on the WhoKnows project with GitHub Actions.
 
 ---
 
 ## The tutorials
 
-[01. Setting up in one.com](./tutorials/01._setting_up_in_one.com.md)
+1. [Bandit](./tutorials/01._bandit.md). A static analysis tool for finding security issues in Python code.
 
-[02. Setting up in one.com](./tutorials/02._setting_up_in_one.com.md)
+2. [Safety](./tutorials/02._safety.md). A CLI tool to check for vulnerable dependencies in your Python projects.
 
-[03. Running it on the server](./tutorials/03._running_it_on_the_server.md)
-
-
----
-
-## Good general advice
-
-Try in incognito mode. 
-
-Try both with and without `www`.
-
-Try different browsers. (This happened to me where Firefox was working but Chrome had cached the old certificate. It then worked in Chrome after an hour.)
+3. [OWASP ZAP](./tutorials/03._owasp_zap.md). A security tool to help automatically find security vulnerabilities in your web applications while you are developing and testing your applications.
 

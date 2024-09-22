@@ -1,0 +1,52 @@
+name: OWASP ZAP
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+  issues: write
+  security-events: write
+
+jobs:
+  owasp-zap:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+      working-directory: src/backend
+
+    - name: Start the application
+      run: |
+        python src/backend/app.py &
+        sleep 10  # Give the app time to start
+
+    - name: Ensure the app is running
+      run: |
+        curl --retry 5 --retry-connrefused --retry-delay 5 http://localhost:8080
+
+    - name: ZAP Scan
+      uses: zaproxy/action-full-scan@v0.10.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        target: 'http://localhost:8080'
+        cmd_options: '-a' # automatic mode
+        allow_issue_writing: false
+      
+    - name: Upload OWASP ZAP report
+      uses: actions/upload-artifact@v3
+      with:
+        name: zap-report
+        path: zap.out 

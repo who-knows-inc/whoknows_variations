@@ -1,0 +1,26 @@
+name: Safety Dependency Check
+
+on: [push, pull_request]
+
+jobs:
+  safety-check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install safety
+      working-directory: src/backend
+
+    - name: Run Safety for dependency checks
+      run: safety check
+      working-directory: src/backend
