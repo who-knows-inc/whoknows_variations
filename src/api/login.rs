@@ -19,7 +19,7 @@ pub struct LoginRequest {
     pub password: String,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, sqlx::FromRow)]
 pub struct User {
     pub id: i32,
     pub username: String,
@@ -34,7 +34,7 @@ pub async fn login(
 ) -> Result<Redirect, Json<LoginResponse>> {
     // Get the login request from the form data
     let login_request = login_request.into_inner();
-    
+
     // Acquire a connection from the pool
     let mut conn = match pool.acquire().await {
         Ok(conn) => conn,
