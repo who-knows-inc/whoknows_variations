@@ -10,7 +10,6 @@ log_level = "normal"
 [debug]
 address = "127.0.0.1"
 port = 8000
-secret_key = "development key"
 log_level = "normal"
 
 [release]
