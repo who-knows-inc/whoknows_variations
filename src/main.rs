@@ -8,6 +8,7 @@ pub mod db;
 pub mod routes;
 pub mod security;
 
+use db::pool::get_pool;
 use dotenvy::dotenv;
 use rocket::fs::FileServer;
 use rocket_dyn_templates::Template;
@@ -19,7 +20,7 @@ async fn rocket() -> _ {
     dotenv().ok();
 
     // Create the database pool
-    let pool = db::pool::get_pool(&env::var("DATABASE_URL").unwrap()).await;
+    let pool = get_pool(&env::var("DATABASE_URL").unwrap()).await;
 
     // Build and return the Rocket instance
     rocket::build()
