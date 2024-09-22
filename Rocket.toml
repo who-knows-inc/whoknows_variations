@@ -8,6 +8,7 @@ port = 8001
 log_level = "normal"
 
 [debug]
+port = 8000
 secret_key = "development key"
 log_level = "normal"
 
