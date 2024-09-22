@@ -1,6 +1,6 @@
-# Whoknows Variations - Continuous Deployment
+# Whoknows Variations - Security Testing
 
-This tutorial focuses on how to perform various securits test on the WhoKnows project with GitHub Actions.
+This tutorial focuses on how to perform various security tests on the WhoKnows project with GitHub Actions.
 
 ---
 
