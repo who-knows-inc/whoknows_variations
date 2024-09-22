@@ -39,7 +39,7 @@ jobs:
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
           source: ${{ secrets.PKG }}.tar.gz
-          target: ${{ secrets.DEPLOY_DIR }}
+          target: ${{ secrets.STAGING_DIR }}
 
           # extract and run the app on the VM
       - name: extract and run the app on the VM
