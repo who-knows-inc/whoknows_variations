@@ -3,9 +3,10 @@ use rocket::response::Redirect;
 use rocket::serde::json::Json;
 use rocket::State;
 use serde::Serialize;
-use sqlx::PgPool;
+use sqlx::{Error as SqlxError, PgPool};
 
 use crate::security::security::verify_password;
+
 #[derive(Serialize)]
 pub struct LoginResponse {
     pub success: bool,
@@ -33,26 +34,55 @@ pub async fn login(
 ) -> Result<Redirect, Json<LoginResponse>> {
     // Get the login request from the form data
     let login_request = login_request.into_inner();
+    
     // Acquire a connection from the pool
-    let mut conn = pool.acquire().await.unwrap();
+    let mut conn = match pool.acquire().await {
+        Ok(conn) => conn,
+        Err(e) => {
+            eprintln!("Failed to acquire connection: {:?}", e);
+            return Err(Json(LoginResponse {
+                success: false,
+                message: "Internal server error".to_string(),
+            }));
+        }
+    };
 
     // Query the database for the user
-    let user = sqlx::query_as!(
+    let user_result = sqlx::query_as!(
         User,
         "SELECT * FROM users WHERE username = $1",
         login_request.username
     )
     .fetch_one(&mut conn)
-    .await
-    .unwrap();
+    .await;
 
-    // Verify the password
-    if verify_password(&user.password, &login_request.password) {
-        Ok(Redirect::to("/"))
-    } else {
-        Err(Json(LoginResponse {
-            success: false,
-            message: "Invalid username or password".to_string(),
-        }))
+    match user_result {
+        Ok(user) => {
+            // Verify the password
+            if verify_password(&user.password, &login_request.password) {
+                Ok(Redirect::to("/"))
+            } else {
+                // Password doesn't match
+                Err(Json(LoginResponse {
+                    success: false,
+                    message: "Invalid username or password".to_string(),
+                }))
+            }
+        }
+        Err(SqlxError::RowNotFound) => {
+            // User not found
+            Err(Json(LoginResponse {
+                success: false,
+                message: "Invalid username or password".to_string(),
+            }))
+        }
+        Err(e) => {
+            // Other database error
+            eprintln!("Database error: {:?}", e);
+            Err(Json(LoginResponse {
+                success: false,
+                message: "Internal server error".to_string(),
+            }))
+        }
     }
 }
