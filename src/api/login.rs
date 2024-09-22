@@ -60,6 +60,7 @@ pub async fn login(
 
                 // Set a private cookie with the user's ID
                 cookies.add_private(Cookie::new("user_id", user.id.to_string()));
+
                 Ok(Redirect::to("/"))
             } else {
                 // Password doesn't match
