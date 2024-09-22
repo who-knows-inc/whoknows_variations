@@ -1,14 +1,15 @@
-name: Deploy
+name: Deploy to Staging
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - staging
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      SQLX_OFFLINE: 'true'  # Ensure offline mode is enabled
+      SQLX_OFFLINE: "true" # Ensure offline mode is enabled
 
     steps:
       - name: Checkout code
@@ -38,7 +39,7 @@ jobs:
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
           source: ${{ secrets.PKG }}.tar.gz
-          target: ${{ secrets.DEPLOY_DIR }}
+          target: ${{ secrets.STAGING_DIR }}
 
           # extract and run the app on the VM
       - name: extract and run the app on the VM
@@ -48,7 +49,7 @@ jobs:
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
           script: |
-            cd ${{ secrets.DEPLOY_DIR }}
+            cd ${{ secrets.STAGING_DIR }}
             tar -xzvf ${{ secrets.PKG }}.tar.gz
             rm ${{ secrets.PKG }}.tar.gz
-            sudo systemctl restart ${{ secrets.SERVICE_NAME }}.service
+            sudo systemctl restart ${{ secrets.SERVICE_NAME_STAGING }}.service

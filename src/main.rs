@@ -1,3 +1,5 @@
+// src/main.rs
+
 #[macro_use]
 extern crate rocket;
 
@@ -6,6 +8,7 @@ pub mod db;
 pub mod routes;
 pub mod security;
 
+use db::pool::get_pool;
 use dotenvy::dotenv;
 use rocket::fs::FileServer;
 use rocket_dyn_templates::Template;
@@ -13,15 +16,20 @@ use std::env;
 
 #[launch]
 async fn rocket() -> _ {
+    // Load environment variables from .env file (optional)
     dotenv().ok();
-    let static_path = env::var("STATIC_PATH").unwrap_or("/var/www/whoknows/static".to_string());
 
-    let pool = db::pool::get_pool().await;
+    // Create the database pool
+    let pool = get_pool(&env::var("DATABASE_URL").unwrap()).await;
 
+    // Build and return the Rocket instance
     rocket::build()
         .attach(Template::fairing())
         .manage(pool)
-        .mount("/static", FileServer::from(static_path))
+        .mount(
+            "/static",
+            FileServer::from(env::var("STATIC_PATH").unwrap()),
+        )
         .mount(
             "/",
             routes![
@@ -29,7 +37,7 @@ async fn rocket() -> _ {
                 routes::pages::about,
                 routes::pages::login,
                 routes::pages::register,
-                routes::pages::search
+                routes::pages::search,
             ],
         )
         .mount("/api", routes![api::login::login, api::register::register])

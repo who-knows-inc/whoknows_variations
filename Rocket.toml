@@ -1,27 +1,23 @@
-[development]
-database_url = "postgres://postgres:postgres@localhost/postgres"
-address = "localhost"
-port = 8000
+[global]
 keep_alive = 5
-read_timeout = 5
-write_timeout = 5
-log = "normal"
 limits = { forms = 32768 }
+
+[default]
+address = "127.0.0.1"
+port = 8000
+log_level = "normal"
+
+[debug]
+ROCKET_SECRET_KEY="development key"
+log_level = "normal"
 
 [staging]
 address = "0.0.0.0"
-port = 8000
-keep_alive = 5
-read_timeout = 5
-write_timeout = 5
-log = "normal"
-limits = { forms = 32768 }
+port = 8001
+log_level = "normal"
 
-[production]
-adress = "127.0.0.1"
+[release]
+address = "127.0.0.1"
 port = 8000
-keep_alive = 5
-read_timeout = 5
-write_timeout = 5
-log = "critical"
-limits = { forms = 32768 }
+log_level = "critical"
+secret_key = { env = "ROCKET_SECRET_KEY" }
