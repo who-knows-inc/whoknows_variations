@@ -5,7 +5,7 @@ use rocket::State;
 use serde::Serialize;
 use sqlx::PgPool;
 
-use crate::api::login::User;
+use crate::models::user::User;
 use crate::security::security::hash_password;
 #[derive(Serialize)]
 pub struct RegisterResponse {
