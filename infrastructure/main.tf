@@ -13,7 +13,7 @@ provider "azurerm" {
   features {}
 }
 
-resource "azurerm_resource_group" "keacloud" {
+resource "azurerm_resource_group" "whoknows" {
   name     = var.resource_group_name
   location = var.location
 }

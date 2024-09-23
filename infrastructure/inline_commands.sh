@@ -5,12 +5,11 @@ sudo apt-get update && sudo apt-get install -y software-properties-common
 echo "============================================================================================"
 echo "Install Node.js"
 echo "============================================================================================"
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash
-chmod +x ~/.nvm/nvm.sh
-source ~/.bashrc
-nvm install 16
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
+nvm install 22
+nvm use 22
 echo "============================================================================================"
-echo "Set python3.6 as default"
+echo "Install pip"
 echo "============================================================================================"
 sudo apt install -y python3-pip
 echo "============================================================================================"
