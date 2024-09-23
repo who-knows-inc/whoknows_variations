@@ -6,8 +6,11 @@
     <title>Weather</title>
 </head>
 <body>
-    <h1>Weather in {{ city }}</h1>
-    <p>Temperature: {{ temperature }}°C</p>
-    <p>Condition: {{ description }}</p>
+    <h1>This is the weather page</h1>
+    <p>Location: Denmark</p>
+    <p>City: Copenhagen</p>
+    <p>Temperature: 21 degrees</p>
+    <p>Humidity: 2%</p>
+    <p>Wind Speed: 3 m/s</p>
 </body>
 </html>
