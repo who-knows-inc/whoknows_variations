@@ -8,7 +8,7 @@ use crate::db::get_current_user::get_current_user;
 #[get("/")]
 pub async fn index(cookies: &CookieJar<'_>, db_pool: &State<PgPool>) -> Template {
     let user = get_current_user(cookies, db_pool).await;
-    Template::render("index", context! { user: user })
+    Template::render("search", context! { user: user })
 }
 
 #[get("/about")]

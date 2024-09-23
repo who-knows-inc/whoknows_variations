@@ -8,7 +8,7 @@ use sqlx::postgres::PgPool;
 pub struct SearchResult {
     pub title: String,
     pub url: String,
-    pub description: Option<String>,
+    pub content: Option<String>,
 }
 
 #[derive(FromForm)]  
@@ -18,7 +18,7 @@ pub struct SearchData {
 }
 
 #[rocket::post("/search", data = "<search_data>")]
-pub async fn api_search(
+pub async fn search(
     search_data: Form<SearchData>,  
     db: &State<PgPool>
 ) -> Json<Vec<SearchResult>> {
@@ -29,7 +29,7 @@ pub async fn api_search(
     };
 
     let search_results: Vec<SearchResult> = sqlx::query_as::<_, SearchResult>(
-        "SELECT title, url, description FROM pages WHERE language = $1 AND content LIKE $2"
+        "SELECT title, url, content FROM pages WHERE language = $1 AND content LIKE $2"
     )
     .bind(&language)
     .bind(&query_string)
