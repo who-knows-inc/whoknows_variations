@@ -1,11 +1,11 @@
-resource "azurerm_linux_virtual_machine" "keacloud" {
+resource "azurerm_linux_virtual_machine" "whoknows" {
   name                = var.vm_name
-  resource_group_name = azurerm_resource_group.keacloud.name
-  location            = azurerm_resource_group.keacloud.location
+  resource_group_name = azurerm_resource_group.whoknows.name
+  location            = azurerm_resource_group.whoknows.location
   size                = var.vm_size
   admin_username      = var.admin_username
   network_interface_ids = [
-    azurerm_network_interface.keacloud.id,
+    azurerm_network_interface.whoknows.id,
   ]
 
   os_disk {
@@ -35,7 +35,7 @@ resource "azurerm_linux_virtual_machine" "keacloud" {
       type        = "ssh"
       user        = var.admin_username
       private_key = file(var.ssh_private_key)
-      host        = azurerm_public_ip.keacloud.ip_address
+      host        = azurerm_public_ip.whoknows.ip_address
     }
   }
 

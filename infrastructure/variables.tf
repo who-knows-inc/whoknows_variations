@@ -11,7 +11,7 @@ variable "location" {
 variable "vnet_name" {
   description = "The name of the virtual network"
   type        = string
-  default     = "keacloud-vnet"
+  default     = "whoknows-vnet"
 }
 
 variable "vnet_address_space" {
@@ -35,7 +35,7 @@ variable "subnet_address_prefix" {
 variable "public_ip_name" {
   description = "The name of the public IP"
   type        = string
-  default     = "keacloud-publicip"
+  default     = "whoknows-publicip"
 }
 
 variable "public_ip_allocation_method" {
@@ -47,7 +47,7 @@ variable "public_ip_allocation_method" {
 variable "nic_name" {
   description = "The name of the network interface"
   type        = string
-  default     = "keacloud-nic"
+  default     = "whoknows-nic"
 }
 
 variable "ip_configuration_name" {
