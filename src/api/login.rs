@@ -29,7 +29,7 @@ pub async fn login(
 ) -> Result<Redirect, Json<LoginResponse>> {
     // Get the login request from the form data
     let login_request = login_request.into_inner();
-
+    
     // Acquire a connection from the pool
     let mut conn = match pool.acquire().await {
         Ok(conn) => conn,
@@ -60,7 +60,6 @@ pub async fn login(
 
                 // Set a private cookie with the user's ID
                 cookies.add_private(Cookie::new("user_id", user.id.to_string()));
-
                 Ok(Redirect::to("/"))
             } else {
                 // Password doesn't match
