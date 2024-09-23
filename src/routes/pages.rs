@@ -42,10 +42,14 @@ pub async fn search(cookies: &CookieJar<'_>, db_pool: &State<PgPool>) -> Templat
     Template::render("search", context! { user: user })
 }
 
-#[get("/weather")]
+#[get("/weather")] // add this route to the routes module
+// we need to add the fetch_weather_data function to the weather module
 pub async fn weather(cookies: &CookieJar<'_>, db_pool: &State<PgPool>) -> Template {
+    // get the current user
     let user = get_current_user(cookies, db_pool).await;
-    let weather_data = fetch_weather_data().await;
+    // fetch the weather data
+    let weather_data = fetch_weather_data().await; // calls the fetch_weather_data function to get the current weather data
+    // render the weather template with the user and weather data
     Template::render("weather", context! { user: user, weather: weather_data })
 }
 
