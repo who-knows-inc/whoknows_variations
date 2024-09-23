@@ -3,14 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather</title>
+    <title>Weather Report</title>
 </head>
 <body>
-    <h1>This is the weather page</h1>
-    <p>Location: Denmark</p>
-    <p>City: Copenhagen</p>
-    <p>Temperature: 21 degrees</p>
-    <p>Humidity: 2%</p>
-    <p>Wind Speed: 3 m/s</p>
+    <h1>Weather Report</h1>
+    {% if user %}
+        <p>Welcome, {{ user.username }}!</p>
+    {% endif %}
+    <div id="weather">
+        <p>Temperature: {{ weather.temperature_2m }} °C</p>
+        <p>Humidity: {{ weather.relative_humidity_2m }} %</p>
+        <p>Rain: {{ weather.rain }} mm</p>
+        <p>Wind Speed: {{ weather.wind_speed_10m }} m/s</p>
+        <p>Wind Direction: {{ weather.wind_direction_10m }} °</p>
+    </div>
 </body>
 </html>

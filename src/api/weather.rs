@@ -1,36 +1,27 @@
-// THIS IS THE WEATHER API DUMMY JUST RETURNS SOME DATA
-//  TODO - REPLACE THIS WITH A REAL API CALL
 
-use rocket::serde::json::Json;
-use serde::Serialize;
+use reqwest::Client;
+use serde::{Deserialize, Serialize};
 
-type WeatherResponse = WeatherResponseData;
-
-#[derive(Serialize)]
-pub struct WeatherResponseData {
-    pub success: bool,
-    pub message: String,
-    pub weather: Weather,
+#[derive(Deserialize, Serialize)]
+pub struct WeatherData {
+    current: CurrentWeather,
 }
 
-#[derive(Serialize)]
-pub struct Weather {
-    pub temperature: f64,
-    pub humidity: f64,
-    pub wind_speed: f64,
+#[derive(Deserialize, Serialize)]
+pub struct CurrentWeather {
+    temperature_2m: f32,
+    relative_humidity_2m: f32,
+    rain: f32,
+    wind_speed_10m: f32,
+    wind_direction_10m: f32,
 }
 
-// weather api
-#[get("/weather")]
-pub async fn weather() -> Json<WeatherResponse> {
-    let weather_response = WeatherResponse {
-        success: true,
-        message: "Weather data retrieved successfully".to_string(),
-        weather: Weather {
-            temperature: 25.0,
-            humidity: 50.0,
-            wind_speed: 10.0,
-        },
-    };
-    Json(weather_response)
+pub async fn fetch_weather_data() -> CurrentWeather {
+    let client = Client::new();
+    let api_url = "https://api.open-meteo.com/v1/forecast?latitude=55.6759&longitude=12.5655&current=temperature_2m,relative_humidity_2m,rain,wind_speed_10m,wind_direction_10m&timezone=auto";
+    
+    let response = client.get(api_url).send().await.unwrap();
+    let weather_data: WeatherData = response.json().await.unwrap();
+    
+    weather_data.current
 }

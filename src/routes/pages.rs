@@ -4,6 +4,7 @@ use serde::Serialize;
 use sqlx::PgPool;
 
 use crate::db::get_current_user::get_current_user;
+use crate::api::weather::fetch_weather_data;
 
 #[get("/")]
 pub async fn index(cookies: &CookieJar<'_>, db_pool: &State<PgPool>) -> Template {
@@ -41,14 +42,15 @@ pub async fn search(cookies: &CookieJar<'_>, db_pool: &State<PgPool>) -> Templat
     Template::render("search", context! { user: user })
 }
 
-// THIS IS THE WEATHER API DUMMY JUST RETURNS SOME DATA
-//  TODO - REPLACE THIS WITH A REAL API CALL
-
 #[get("/weather")]
 pub async fn weather(cookies: &CookieJar<'_>, db_pool: &State<PgPool>) -> Template {
     let user = get_current_user(cookies, db_pool).await;
-    Template::render("weather", context! { user: user })
+    let weather_data = fetch_weather_data().await;
+    Template::render("weather", context! { user: user, weather: weather_data })
 }
+
+// THIS IS THE WEATHER API DUMMY JUST RETURNS SOME DATA
+//  TODO - REPLACE THIS WITH A REAL API CALL
 
 // type WeatherResponse = WeatherResponseData;
 
@@ -67,7 +69,7 @@ pub async fn weather(cookies: &CookieJar<'_>, db_pool: &State<PgPool>) -> Templa
 // }
 
 // // weather api
-// #[get("/weather")]
+//  #[get("/weather")]
 // pub async fn weather() -> Json<WeatherResponse> {
 //     let weather_response = WeatherResponse {
 //         success: true,
