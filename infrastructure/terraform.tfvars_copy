@@ -1,6 +1,6 @@
 location                     = "North Europe"
-resource_group_name          = "my-resource-group"
-vm_name                      = "main-vm"
+resource_group_name          = "whoknows-resource-group"
+vm_name                      = "whoknows-main-vm"
 vm_size                      = "Standard_B1s"
 admin_username               = "adminuser"
 os_disk_caching              = "ReadWrite"
