@@ -42,6 +42,10 @@ jobs:
       working-directory: infrastructure
       continue-on-error: true
 
+    - name: Run Terraform Init
+      run: terraform init
+      working-directory: infrastructure
+    
     - name: Run Terraform Validate
       run: terraform validate
       working-directory: infrastructure
