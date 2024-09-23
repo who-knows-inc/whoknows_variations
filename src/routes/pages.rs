@@ -44,33 +44,39 @@ pub async fn search(cookies: &CookieJar<'_>, db_pool: &State<PgPool>) -> Templat
 // THIS IS THE WEATHER API DUMMY JUST RETURNS SOME DATA
 //  TODO - REPLACE THIS WITH A REAL API CALL
 
-type WeatherResponse = WeatherResponseData;
-
-#[derive(Serialize)]
-pub struct WeatherResponseData {
-    pub success: bool,
-    pub message: String,
-    pub weather: Weather,
-}
-
-#[derive(Serialize)]
-pub struct Weather {
-    pub temperature: f64,
-    pub humidity: f64,
-    pub wind_speed: f64,
-}
-
-// weather api
 #[get("/weather")]
-pub async fn weather() -> Json<WeatherResponse> {
-    let weather_response = WeatherResponse {
-        success: true,
-        message: "Weather data retrieved successfully".to_string(),
-        weather: Weather {
-            temperature: 25.0,
-            humidity: 50.0,
-            wind_speed: 10.0,
-        },
-    };
-    Json(weather_response)
+pub async fn weather(cookies: &CookieJar<'_>, db_pool: &State<PgPool>) -> Template {
+    let user = get_current_user(cookies, db_pool).await;
+    Template::render("weather", context! { user: user })
 }
+
+// type WeatherResponse = WeatherResponseData;
+
+// #[derive(Serialize)]
+// pub struct WeatherResponseData {
+//     pub success: bool,
+//     pub message: String,
+//     pub weather: Weather,
+// }
+
+// #[derive(Serialize)]
+// pub struct Weather {
+//     pub temperature: f64,
+//     pub humidity: f64,
+//     pub wind_speed: f64,
+// }
+
+// // weather api
+// #[get("/weather")]
+// pub async fn weather() -> Json<WeatherResponse> {
+//     let weather_response = WeatherResponse {
+//         success: true,
+//         message: "Weather data retrieved successfully".to_string(),
+//         weather: Weather {
+//             temperature: 25.0,
+//             humidity: 50.0,
+//             wind_speed: 10.0,
+//         },
+//     };
+//     Json(weather_response)
+// }
