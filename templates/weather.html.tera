@@ -17,5 +17,8 @@
         <p>Wind Speed: {{ weather.wind_speed_10m }} m/s</p>
         <p>Wind Direction: {{ weather.wind_direction_10m }} °</p>
     </div>
+    <div>
+        <a href="/">Go Back</a>
+    </div>
 </body>
 </html>
