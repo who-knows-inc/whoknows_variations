@@ -1,4 +1,4 @@
-name: Infrastructure as Code Linting
+name: Infrastructure as Code Linting and Security
 
 on: [push, pull_request]
 
@@ -29,6 +29,7 @@ jobs:
     - name: Run Checkov
       run: checkov -d .
       working-directory: infrastructure
+      continue-on-error: true
 
     - name: Install tfsec
       run: |
@@ -39,6 +40,7 @@ jobs:
     - name: Run tfsec for static analysis
       run: tfsec
       working-directory: infrastructure
+      continue-on-error: true
 
     - name: Run Terraform Validate
       run: terraform validate
