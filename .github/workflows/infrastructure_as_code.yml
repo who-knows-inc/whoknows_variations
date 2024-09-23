@@ -33,7 +33,7 @@ jobs:
 
     - name: Install tfsec
       run: |
-        curl -L "$(curl -s https://api.github.com/repos/aquasecurity/tfsec/releases/latest | jq -r '.assets[] | select(.name | test("tfsec-linux-amd64")) | .browser_download_url')" -o tfsec
+        curl -L "$(curl -s https://api.github.com/repos/aquasecurity/tfsec/releases/latest | jq -r '.assets[] | select(.name == "tfsec-linux-amd64") | .browser_download_url')" -o tfsec
         chmod +x tfsec
         sudo mv tfsec /usr/local/bin/
 
