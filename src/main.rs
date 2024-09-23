@@ -52,7 +52,7 @@ async fn rocket() -> _ {
                 api::login::logout,
                 api::register::register,
                 api::weather::weather,
-                api::search::api_search, 
+                api::search::search, 
             ],
         )
 }
