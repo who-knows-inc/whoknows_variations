@@ -5,11 +5,16 @@
 <p>This is the homepage. Search for anything you want to know.</p>
 
 <div>
+    <nav>
+            <a href="/weather" class="btn">Go to Weather Page</a>
+            <a href="/about" clastt="btn">About</a>
+    </nav>
     <form action="/api/search" method="post">
         <input type="text" name="q" placeholder="Search...">
         <input type="hidden" name="language" value="en">
         <button type="submit">Search</button>
     </form>
+
 </div>
 
 {% endblock %}
