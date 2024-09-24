@@ -59,7 +59,7 @@ pub async fn login(
                 println!("User found: {:?}", user.username);
 
                 // Set a private cookie with the user's ID
-                cookies.add_private(Cookie::new("user_id", user.id.to_string()));
+                cookies.add(Cookie::new("user_id", user.id.to_string()));
                 Ok(Redirect::to("/"))
             } else {
                 // Password doesn't match
@@ -97,7 +97,7 @@ pub async fn logout(cookies: &CookieJar<'_>) -> Redirect {
     // Get the logout request from the form data
 
     // Remove the user's cookie
-    cookies.remove_private(Cookie::from("user_id"));
+    cookies.remove(Cookie::from("user_id"));
 
     // Redirect the user to the home page
     Redirect::to("/")
