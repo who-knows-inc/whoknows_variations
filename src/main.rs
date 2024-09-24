@@ -3,7 +3,6 @@
 #[macro_use]
 extern crate rocket;
 
-pub mod api;
 pub mod db;
 pub mod fairings;
 pub mod models;
@@ -53,11 +52,11 @@ async fn rocket() -> _ {
         .mount(
             "/api",
             routes![
-                api::login::login,
-                api::login::logout,
-                api::register::register,
-                api::weather::weather,
-                api::search::search, 
+                routes::api::login::login,
+                routes::api::login::logout,
+                routes::api::register::register,
+                routes::api::weather::weather,
+                routes::api::search::search,
             ],
         )
 }
