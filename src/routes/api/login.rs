@@ -26,7 +26,7 @@ pub async fn login(
     login_request: Form<LoginRequest>,
     pool: &State<PgPool>,
     cookies: &CookieJar<'_>,
-) -> Result<Redirect, Json<LoginResponse>> {
+) -> Json<LoginResponse> {
     // Get the login request from the form data
     let login_request = login_request.into_inner();
 
@@ -35,10 +35,10 @@ pub async fn login(
         Ok(conn) => conn,
         Err(e) => {
             eprintln!("Failed to acquire connection: {:?}", e);
-            return Err(Json(LoginResponse {
+            return Json(LoginResponse {
                 success: false,
                 message: "Internal server error".to_string(),
-            }));
+            });
         }
     };
 
@@ -55,34 +55,36 @@ pub async fn login(
         Ok(user) => {
             // Verify the password
             if verify_password(&user.password, &login_request.password) {
-                // println!("User found: {:?}", user);
                 println!("User found: {:?}", user.username);
 
                 // Set a private cookie with the user's ID
                 cookies.add(Cookie::new("user_id", user.id.to_string()));
-                Ok(Redirect::to("/"))
+                Json(LoginResponse {
+                    success: true,
+                    message: "Login successful".to_string(),
+                })
             } else {
                 // Password doesn't match
-                Err(Json(LoginResponse {
+                Json(LoginResponse {
                     success: false,
                     message: "Invalid username or password".to_string(),
-                }))
+                })
             }
         }
         Err(SqlxError::RowNotFound) => {
             // User not found
-            Err(Json(LoginResponse {
+            Json(LoginResponse {
                 success: false,
                 message: "Invalid username or password".to_string(),
-            }))
+            })
         }
         Err(e) => {
             // Other database error
             eprintln!("Database error: {:?}", e);
-            Err(Json(LoginResponse {
+            Json(LoginResponse {
                 success: false,
                 message: "Internal server error".to_string(),
-            }))
+            })
         }
     }
 }
