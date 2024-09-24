@@ -20,20 +20,18 @@
   <script>
     document.getElementById('login-form').addEventListener('submit', async function(event) {
       event.preventDefault(); // Prevent the default form submission
-
-      const formData = new FormData(this);
-      const data = {
-        username: formData.get('username'),
-        password: formData.get('password')
-      };
-
       try {
         const response = await fetch('/api/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(data)
+          body: JSON.stringify(
+            {
+              username: document.getElementById('username').value,
+              password: document.getElementById('password').value
+            }
+          )
         });
 
         const result = await response.json();
