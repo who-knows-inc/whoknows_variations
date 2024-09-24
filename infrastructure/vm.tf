@@ -27,18 +27,6 @@ resource "azurerm_linux_virtual_machine" "whoknows" {
 
   disable_password_authentication = true
 
-  provisioner "file" {
-    source      = var.ssh_private_key
-    destination = "/home/${var.admin_username}/.ssh/id_rsa"
-
-    connection {
-      type        = "ssh"
-      user        = var.admin_username
-      private_key = file(var.ssh_private_key)
-      host        = azurerm_public_ip.whoknows.ip_address
-    }
-  }
-
   provisioner "remote-exec" {
     inline = split("\n", templatefile("${path.module}/inline_commands.sh", {}))
 
