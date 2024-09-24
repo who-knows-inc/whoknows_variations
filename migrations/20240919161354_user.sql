@@ -7,6 +7,6 @@ CREATE TABLE IF NOT EXISTS users (
   password TEXT NOT NULL
 );
 
--- Create a default user, The password is 'password' (MD5 hashed)
+-- Create a default user, The password is 'password' (BCrypt hashed)
 INSERT INTO users (username, email, password) 
-    VALUES ('admin', 'keamonk1@stud.kea.dk', '5f4dcc3b5aa765d61d8327deb882cf99');
+    VALUES ('admin', 'keamonk1@stud.kea.dk', ' $2a$12$Xm.FSBCfvQfGbEC.S5mY2Oc6hWM6B4bCyAWS1rc2BVcoS0rB7PxIC ');
