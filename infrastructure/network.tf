@@ -32,6 +32,20 @@ resource "azurerm_network_interface" "whoknows" {
   }
 }
 
+resource "azurerm_network_security_rule" "whoknows_ssh_rule" {
+  name                        = "SSH"
+  priority                    = 1000
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "22"
+  source_address_prefix       = "*"
+  destination_address_prefix  = "*"
+  network_security_group_name = azurerm_network_security_group.whoknows_nsg.name
+  resource_group_name         = azurerm_resource_group.whoknows.name
+}
+
 resource "azurerm_network_security_group" "whoknows_nsg" {
   name                = "whoknows-nsg"
   location            = azurerm_resource_group.whoknows.location
@@ -62,18 +76,4 @@ resource "azurerm_network_security_group" "whoknows_nsg" {
     destination_address_prefix = "*"
   }
 
-}
-
-resource "azurerm_network_security_rule" "whoknows_ssh_rule" {
-  name                        = "SSH"
-  priority                    = 1000
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "Tcp"
-  source_port_range           = "*"
-  destination_port_range      = "22"
-  source_address_prefix       = "*"
-  destination_address_prefix  = "*"
-  network_security_group_name = azurerm_network_security_group.whoknows_nsg.name
-  resource_group_name         = azurerm_resource_group.whoknows.name
 }
