@@ -52,7 +52,7 @@
         console.error('Error:', error);
         const errorDiv = document.getElementById('error-message');
         const errorText = document.getElementById('error-text');
-        errorText.textContent = 'An unexpected error occurred.';
+        errorText.textContent = 'An error occurred.';
         errorDiv.style.display = 'block';
       }
     });
