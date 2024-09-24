@@ -19,7 +19,7 @@ pub struct LoginRequest {
     pub password: String,
 }
 
-#[post("/login", data = "<login_request>")]
+#[post("/login", format = "application/json", data = "<login_request>")]
 pub async fn login(
     login_request: Json<LoginRequest>,
     pool: &State<PgPool>,
