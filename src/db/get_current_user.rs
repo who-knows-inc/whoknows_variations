@@ -4,9 +4,9 @@ use sqlx::PgPool;
 
 pub async fn get_current_user(cookies: &CookieJar<'_>, db_pool: &PgPool) -> Option<User> {
     // Print the cookies
-    println!("Cookies: {:?}", cookies.get_private("user_id"));
+    println!("Cookies: {:?}", cookies.get("user_id"));
     // Retrieve the private cookie named "user_id"
-    if let Some(cookie) = cookies.get_private("user_id") {
+    if let Some(cookie) = cookies.get("user_id") {
         // Parse the user ID from the cookie
         if let Ok(user_id) = cookie.value().parse::<i32>() {
             // Query the database for the user
