@@ -22,11 +22,16 @@ async fn rocket() -> _ {
     // Load environment variables from .env file (optional)
     dotenv().ok();
 
+    let figment = rocket::Config::figment().merge((
+        "root",
+        env::var("ROCKET_BASE").expect("ROCKET_BASE must be set"),
+    ));
+
     // Create the database pool
     let pool = get_pool(&env::var("DATABASE_URL").expect("DATABASE_URL must be set")).await;
 
     // Build and return the Rocket instance
-    rocket::build()
+    rocket::custom(figment)
         .attach(Template::fairing())
         .attach(DbConnectionChecker)
         .manage(pool)
