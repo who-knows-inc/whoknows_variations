@@ -17,14 +17,14 @@ pub async fn get_current_user(cookies: &CookieJar<'_>, db_pool: &PgPool) -> Opti
                 Ok(user) => Some(user),
                 Err(sqlx::Error::RowNotFound) => {
                     // User not found; remove the invalid cookie
-                    cookies.remove_private(Cookie::from("user_id"));
+                    cookies.remove(Cookie::from("user_id"));
                     None
                 }
                 Err(_) => None, // Handle other errors as needed
             }
         } else {
             // Invalid user ID in cookie; remove it
-            cookies.remove_private(Cookie::from("user_id"));
+            cookies.remove(Cookie::from("user_id"));
             None
         }
     } else {

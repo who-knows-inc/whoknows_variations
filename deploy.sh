@@ -7,7 +7,7 @@
 ## configure these for your environment
 PKG="whoknows_nooneknows"                       # cargo package name
 TARGET="x86_64-unknown-linux-gnu"               # remote target
-ASSETS=("Rocket.toml" "static" "templates")     # list of assets to bundle
+ASSETS=("Rocket.toml" "static" "templates" "migrations") # list of assets to bundle
 BUILD_DIR="target/${TARGET}/release"            # cargo build directory
 
 # Ensure target toolchain is present

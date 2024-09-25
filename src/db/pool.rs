@@ -10,7 +10,12 @@ pub async fn get_pool(database_url: &str) -> PgPool {
         .expect("Failed to create pool");
 
     // Run migrations
-    MIGRATOR.run(&pool).await.expect("Failed to run migrations");
+    println!("Running migrations...");
+    if let Err(e) = MIGRATOR.run(&pool).await {
+        eprintln!("Migration failed: {:?}", e);
+        panic!("Failed to run migrations");
+    }
+    println!("Migrations completed successfully.");
 
     // Return the pool
     pool
