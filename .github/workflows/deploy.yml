@@ -8,7 +8,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      SQLX_OFFLINE: 'true'  # Ensure offline mode is enabled
+      SQLX_OFFLINE: "true" # Ensure offline mode is enabled
 
     steps:
       - name: Checkout code
@@ -49,6 +49,11 @@ jobs:
           key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
           script: |
             cd ${{ secrets.DEPLOY_DIR }}
+            rm -rf migrations
+            rm -rf templates
+            rm -rf static
+            rm -rf Rocket.toml
+            rm ${{ secrets.PKG }}
             tar -xzvf ${{ secrets.PKG }}.tar.gz
             rm ${{ secrets.PKG }}.tar.gz
             sudo systemctl restart ${{ secrets.SERVICE_NAME }}.service
