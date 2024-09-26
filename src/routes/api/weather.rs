@@ -32,6 +32,5 @@ pub async fn fetch_weather_data() -> Json<CurrentWeather> {
     let response = client.get(api_url).send().await.unwrap(); // send the request and unwrap the response
     let weather_data: WeatherData = response.json().await.unwrap(); // parse the JSON response into a WeatherData struct and unwrap it
 
-    Json(weather_data.current)
-    // return the current weather data
+    Json(weather_data.current) // return the current weather data
 }
