@@ -1,9 +1,6 @@
-// src/main.rs
-
 #[macro_use]
 extern crate rocket;
 
-pub mod api;
 pub mod db;
 pub mod fairings;
 pub mod models;
