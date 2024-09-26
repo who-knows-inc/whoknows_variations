@@ -59,7 +59,7 @@ pub async fn register(
     };
     // Check if the username is already taken
     if user.username == register_request.username {
-        return Err(Json(RegisterResponse {
+         Err(Json(RegisterResponse {
             success: false,
             message: "Username already taken".to_string(),
         }));
