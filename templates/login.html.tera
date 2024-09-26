@@ -2,15 +2,59 @@
 {% block title %}Sign In{% endblock %}
 {% block body %}
   <h2>Log In</h2>
-  {% if error %}<div class="error"><strong>Error:</strong> {{ error }}</div>{% endif %}
-  <form action="/api/login" method="POST">
+
+  <div id="error-message" class="error" style="display: none;">
+    <strong>Error:</strong> <span id="error-text"></span>
+  </div>
+
+  <form id="login-form">
     <dl>
       <dt>Username:</dt>
-      <dd><input type="text" name="username" size="30" value="{{ username | default(value='') }}"></dd>
+      <dd><input type="text" name="username" size="30" required></dd>
       <dt>Password:</dt>
-      <dd><input type="password" name="password" size="30"></dd>
+      <dd><input type="password" name="password" size="30" required></dd>
     </dl>
     <div class="actions"><input type="submit" value="Log In"></div>
   </form>
-{% endblock %}
 
+  <script>
+    document.getElementById('login-form').addEventListener('submit', async function(event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      const formData = new FormData(this);
+      const data = {
+        username: formData.get('username'),
+        password: formData.get('password')
+      };
+
+      try {
+        const response = await fetch('/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          // Redirect to the homepage upon successful login
+          window.location.href = '/';
+        } else {
+          // Display the error message
+          const errorDiv = document.getElementById('error-message');
+          const errorText = document.getElementById('error-text');
+          errorText.textContent = result.message;
+          errorDiv.style.display = 'block';
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        const errorDiv = document.getElementById('error-message');
+        const errorText = document.getElementById('error-text');
+        errorText.textContent = 'An error occurred.';
+        errorDiv.style.display = 'block';
+      }
+    });
+  </script>
+{% endblock %}

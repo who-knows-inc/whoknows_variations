@@ -1,4 +1,3 @@
-
 use reqwest::Client; // using reqwest crate to make HTTP requests
 use serde::{Deserialize, Serialize}; // using serde to serialize and deserialize JSON
 

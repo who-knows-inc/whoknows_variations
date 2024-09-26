@@ -1,8 +1,12 @@
 {% extends "layout" %}
+{% block title %}Home{% endblock %}
 
-{% block body %}
+{% block body %} 
+    <h1>Who Knows? No one knows. Do you know?</h1>
+    <p>This is the homepage. Search for anything you want to know.</p>
+
     <!-- Search Form -->
-    <form action="/api/search" method="post">
+    <form action="/api/search" method="get">
         <input type="text" name="q" placeholder="Search...">
         <input type="hidden" name="language" value="en">
         <button type="submit">Search</button>
@@ -15,7 +19,7 @@
             {% for result in search_results %}
                 <div>
                     <h2><a class="search-result-title" href="{{ result.url }}">{{ result.title }}</a></h2>
-                    <p class="search-result-description">{{ result.description }}</p>
+                    <p class="search-result-description">{{ result.content or 'No description available' }}</p>
                 </div>
             {% endfor %}
         {% endif %}

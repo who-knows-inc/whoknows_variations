@@ -9,7 +9,7 @@ use crate::routes::api::weather::fetch_weather_data;
 #[get("/")]
 pub async fn index(cookies: &CookieJar<'_>, db_pool: &State<PgPool>) -> Template {
     let user = get_current_user(cookies, db_pool).await;
-    Template::render("index", context! { user: user })
+    Template::render("search", context! { user: user })
 }
 
 #[get("/about")]

@@ -6,6 +6,7 @@
   <div class="navigation">
   <nav>
     <h1><a id="nav-logo" href="/">¿Who Knows? noone knows</a></h1>
+    <a href="/weather" class="btn">Go to Weather Page</a>
     {% if user %}
     <a id="nav-logout" href="/api/logout">Log out [{{ user.username }}]</a>
     {% else %}

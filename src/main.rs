@@ -48,8 +48,8 @@ async fn rocket() -> _ {
                 routes::api::login::login,
                 routes::api::login::logout,
                 routes::api::register::register,
-                //routes::api::weather::weather,
-                routes::api::search::api_search, 
+                routes::api::weather::weather,
+                routes::api::search::search,
             ],
         )
 }
