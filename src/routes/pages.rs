@@ -4,7 +4,7 @@ use serde::Serialize;
 use sqlx::PgPool;
 
 use crate::db::get_current_user::get_current_user;
-use crate::api::weather::fetch_weather_data;
+use crate::routes::api::weather::fetch_weather_data;
 
 #[get("/")]
 pub async fn index(cookies: &CookieJar<'_>, db_pool: &State<PgPool>) -> Template {

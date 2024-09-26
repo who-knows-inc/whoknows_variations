@@ -48,11 +48,11 @@ async fn rocket() -> _ {
         .mount(
             "/api",
             routes![
-                api::login::login,
-                api::login::logout,
-                api::register::register,
-                //api::weather::weather,
-                api::search::api_search, 
+                routes::api::login::login,
+                routes::api::login::logout,
+                routes::api::register::register,
+                //routes::api::weather::weather,
+                routes::api::search::api_search, 
             ],
         )
 }
