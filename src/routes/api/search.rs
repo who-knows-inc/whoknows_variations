@@ -1,4 +1,3 @@
-use rocket::form::Form;
 use rocket::serde::json::Json;
 use rocket::State;
 use serde::Serialize;
@@ -8,28 +7,27 @@ use sqlx::postgres::PgPool;
 pub struct SearchResult {
     pub title: String,
     pub url: String,
-    pub description: Option<String>,
+    pub content: Option<String>,
 }
 
-#[derive(FromForm)]
-pub struct SearchData {
-    pub q: Option<String>,
-    pub language: Option<String>,
-}
+#[get("/search?<q>&<language>")]  
+pub async fn search(
+    q: Option<String>,          // Extract the `q` query parameter
+    language: Option<String>,   // Extract the `language` query parameter
+    db: &State<PgPool>
+) -> Json<Vec<SearchResult>> {
+    // Use the specified language or default to "en"
+    let language = language.unwrap_or_else(|| "en".to_string());
 
-#[post("/search", data = "<search_data>")]
-pub async fn search(search_data: Form<SearchData>, db: &State<PgPool>) -> Json<Vec<SearchResult>> {
-    let language = search_data
-        .language
-        .clone()
-        .unwrap_or_else(|| "en".to_string());
-    let query_string = match &search_data.q {
-        Some(q) if !q.is_empty() => format!("%{}%", q),
-        _ => return Json(vec![]),
+    // If there is a search query (q), format it as a SQL LIKE search
+    let query_string = match q {
+        Some(query) if !query.is_empty() => format!("%{}%", query),
+        _ => return Json(vec![]),  
     };
 
+    // Execute the SQL query
     let search_results: Vec<SearchResult> = sqlx::query_as::<_, SearchResult>(
-        "SELECT title, url, description FROM pages WHERE language = $1 AND content LIKE $2",
+        "SELECT title, url, content FROM pages WHERE language = $1 AND content LIKE $2",
     )
     .bind(&language)
     .bind(&query_string)
@@ -40,5 +38,6 @@ pub async fn search(search_data: Form<SearchData>, db: &State<PgPool>) -> Json<V
         vec![]
     });
 
+    // Return the search results as JSON
     Json(search_results)
 }
