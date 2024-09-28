@@ -1,36 +1,36 @@
-// THIS IS THE WEATHER API DUMMY JUST RETURNS SOME DATA
-//  TODO - REPLACE THIS WITH A REAL API CALL
-
+use reqwest::Client; // using reqwest crate to make HTTP requests
 use rocket::serde::json::Json;
-use serde::Serialize;
+use serde::{Deserialize, Serialize}; // using serde to serialize and deserialize JSON
 
-type WeatherResponse = WeatherResponseData;
-
-#[derive(Serialize)]
-pub struct WeatherResponseData {
-    pub success: bool,
-    pub message: String,
-    pub weather: Weather,
+// Define the structure of the JSON response from the weather API
+#[derive(Deserialize, Serialize)] // derive the Deserialize and Serialize traits
+pub struct WeatherData {
+    // define a struct named WeatherData
+    current: CurrentWeather, // define a field named current of type CurrentWeather
 }
 
-#[derive(Serialize)]
-pub struct Weather {
-    pub temperature: f64,
-    pub humidity: f64,
-    pub wind_speed: f64,
+// Define the structure of the current weather data
+#[derive(Deserialize, Serialize)] // derive the Deserialize and Serialize traits
+pub struct CurrentWeather {
+    // define a struct named CurrentWeather
+    temperature_2m: f32,       // define a field named temperature_2m of type f32
+    relative_humidity_2m: f32, // define a field named relative_humidity_2m of type f32
+    rain: f32,                 // define a field named rain of type f32
+    wind_speed_10m: f32,       // define a field named wind_speed_10m of type f32
+    wind_direction_10m: f32,   // define a field named wind_direction_10m of type f32
 }
 
-// weather api
 #[get("/weather")]
-pub async fn weather() -> Json<WeatherResponse> {
-    let weather_response = WeatherResponse {
-        success: true,
-        message: "Weather data retrieved successfully".to_string(),
-        weather: Weather {
-            temperature: 25.0,
-            humidity: 50.0,
-            wind_speed: 10.0,
-        },
-    };
-    Json(weather_response)
+// Define a function to fetch weather data from the API
+pub async fn fetch_weather_data() -> Json<CurrentWeather> {
+    // define an asynchronous function named fetch_weather_data that returns a CurrentWeather struct
+    let client = Client::new(); // create a new reqwest Client so we can make HTTP requests
+                                // define the URL of the weather API
+    let api_url = "https://api.open-meteo.com/v1/forecast?latitude=55.6759&longitude=12.5655&current=temperature_2m,relative_humidity_2m,rain,wind_speed_10m,wind_direction_10m&timezone=auto";
+
+    // make a GET request to the weather API and wait for the response
+    let response = client.get(api_url).send().await.unwrap(); // send the request and unwrap the response
+    let weather_data: WeatherData = response.json().await.unwrap(); // parse the JSON response into a WeatherData struct and unwrap it
+
+    Json(weather_data.current) // return the current weather data
 }

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Report</title>
+</head>
+<body>
+    <h1>Weather Report</h1>
+    {% if user %}
+        <p>Welcome, {{ user.username }}!</p>
+    {% endif %}
+    <div id="weather">
+        <p>Temperature: {{ weather.temperature_2m }} °C</p>
+        <p>Humidity: {{ weather.relative_humidity_2m }} %</p>
+        <p>Rain: {{ weather.rain }} mm</p>
+        <p>Wind Speed: {{ weather.wind_speed_10m }} m/s</p>
+        <p>Wind Direction: {{ weather.wind_direction_10m }} °</p>
+    </div>
+    <div>
+        <a href="/">Go Back</a>
+    </div>
+</body>
+</html>

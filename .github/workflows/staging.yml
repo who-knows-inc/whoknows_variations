@@ -49,7 +49,12 @@ jobs:
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
           script: |
-            cd ${{ secrets.STAGING_DIR }}
+            cd ${{ secrets.STAGING_DIR }}3
+            rm -rf migrations
+            rm -rf templates
+            rm -rf static
+            rm -rf Rocket.toml
+            rm ${{ secrets.PKG }}
             tar -xzvf ${{ secrets.PKG }}.tar.gz
             rm ${{ secrets.PKG }}.tar.gz
             sudo systemctl restart ${{ secrets.SERVICE_NAME_STAGING }}.service
