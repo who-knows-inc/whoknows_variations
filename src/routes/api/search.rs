@@ -1,43 +1,45 @@
-use rocket::form::Form;
 use rocket::serde::json::Json;
 use rocket::State;
 use serde::Serialize;
-use sqlx::postgres::PgPool;
+use sqlx::PgPool;
 
-#[derive(Serialize, sqlx::FromRow)]
+#[derive(Serialize, Debug)]
 pub struct SearchResult {
     pub title: String,
     pub url: String,
-    pub description: Option<String>,
+    pub content: String,
 }
 
-#[derive(FromForm)]
-pub struct SearchData {
-    pub q: Option<String>,
-    pub language: Option<String>,
-}
-
-#[post("/search", data = "<search_data>")]
-pub async fn search(search_data: Form<SearchData>, db: &State<PgPool>) -> Json<Vec<SearchResult>> {
-    let language = search_data
-        .language
-        .clone()
-        .unwrap_or_else(|| "en".to_string());
-    let query_string = match &search_data.q {
-        Some(q) if !q.is_empty() => format!("%{}%", q),
+#[get("/search?<language>&<q>")]
+pub async fn search(
+    language: String,
+    q: Option<String>,
+    pool: &State<PgPool>,
+) -> Json<Vec<SearchResult>> {
+    let language = language.to_lowercase();
+    let query_string = match &q {
+        Some(q) if !q.is_empty() => format!("%{}%", q.to_lowercase()),
         _ => return Json(vec![]),
     };
 
-    let search_results: Vec<SearchResult> = sqlx::query_as::<_, SearchResult>(
-        "SELECT title, url, description FROM pages WHERE language = $1 AND content LIKE $2",
+    let mut conn = match pool.acquire().await {
+        Ok(conn) => conn,
+        Err(e) => {
+            eprintln!("Failed to acquire connection: {:?}", e);
+            return Json(vec![]);
+        }
+    };
+    let search_results = sqlx::query_as!(
+        SearchResult,
+        "SELECT title, url, content FROM pages WHERE language = $1 AND content LIKE $2",
+        language,
+        query_string
     )
-    .bind(&language)
-    .bind(&query_string)
-    .fetch_all(db.inner())
+    .fetch_all(&mut conn)
     .await
     .unwrap_or_else(|err| {
         eprintln!("Database query error: {:?}", err);
-        vec![]
+        vec![] // Return an empty vector if there is an error
     });
 
     Json(search_results)
