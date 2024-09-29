@@ -1,41 +1,45 @@
 use rocket::serde::json::Json;
 use rocket::State;
 use serde::Serialize;
-use sqlx::postgres::PgPool;
+use sqlx::PgPool;
 
-#[derive(Serialize, sqlx::FromRow)]
+#[derive(Serialize, Debug)]
 pub struct SearchResult {
     pub title: String,
     pub url: String,
-    pub content: Option<String>,
+    pub content: String,
 }
 
-#[get("/search?<q>&<language>")]  
+#[get("/search?<language>&<q>")]
 pub async fn search(
-    q: Option<String>,          
-    language: Option<String>,   
-    db: &State<PgPool>
+    language: String,
+    q: Option<String>,
+    pool: &State<PgPool>,
 ) -> Json<Vec<SearchResult>> {
-    // Default to English if no language is specified
-    let language = language.unwrap_or_else(|| "en".to_string());
-
-    // If the search query is empty, return an empty JSON array
-    let query_string = match q {
-        Some(query) if !query.is_empty() => format!("%{}%", query),
-        _ => return Json(vec![]),  
+    let language = language.to_lowercase();
+    let query_string = match &q {
+        Some(q) if !q.is_empty() => format!("%{}%", q.to_lowercase()),
+        _ => return Json(vec![]),
     };
 
-    // Query the database for pages that match the search query
-    let search_results: Vec<SearchResult> = sqlx::query_as::<_, SearchResult>(
+    let mut conn = match pool.acquire().await {
+        Ok(conn) => conn,
+        Err(e) => {
+            eprintln!("Failed to acquire connection: {:?}", e);
+            return Json(vec![]);
+        }
+    };
+    let search_results = sqlx::query_as!(
+        SearchResult,
         "SELECT title, url, content FROM pages WHERE language = $1 AND content LIKE $2",
+        language,
+        query_string
     )
-    .bind(&language)
-    .bind(&query_string)
-    .fetch_all(db.inner())
+    .fetch_all(&mut conn)
     .await
     .unwrap_or_else(|err| {
         eprintln!("Database query error: {:?}", err);
-        vec![]
+        vec![] // Return an empty vector if there is an error
     });
 
     // Return the search results as JSON

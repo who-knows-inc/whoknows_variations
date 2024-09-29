@@ -94,8 +94,6 @@ pub struct LogoutRequest {
 
 #[get("/logout")]
 pub async fn logout(cookies: &CookieJar<'_>) -> Redirect {
-    // Get the logout request from the form data
-
     // Remove the user's cookie
     cookies.remove(Cookie::from("user_id"));
 

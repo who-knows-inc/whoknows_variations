@@ -14,7 +14,9 @@
       <dt>Password:</dt>
       <dd><input type="password" name="password" size="30" required></dd>
     </dl>
-    <div class="actions"><input type="submit" value="Log In"></div>
+    <div class="actions">
+      <input type="submit" value="Log In">
+    </div>
   </form>
 
   <script>
