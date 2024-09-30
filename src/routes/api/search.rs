@@ -9,13 +9,13 @@ pub struct SearchResult {
     pub url: String,
 }
 
-#[get("/search?<language>&<q>")]
+#[get("/search?<q>&<language>")]
 pub async fn search(
-    language: String,
+    language: Option<String>,
     q: Option<String>,
     pool: &State<PgPool>,
 ) -> Json<Vec<SearchResult>> {
-    let language = language.to_lowercase();
+    let language = language.unwrap_or_else(|| "en".to_string());
     let query_string = match &q {
         Some(q) if !q.is_empty() => format!("%{}%", q.to_lowercase()),
         _ => return Json(vec![]),
