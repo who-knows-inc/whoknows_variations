@@ -3,11 +3,10 @@ use rocket::State;
 use serde::Serialize;
 use sqlx::PgPool;
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize)]
 pub struct SearchResult {
     pub title: String,
     pub url: String,
-    pub content: String,
 }
 
 #[get("/search?<language>&<q>")]
@@ -31,7 +30,7 @@ pub async fn search(
     };
     let search_results = sqlx::query_as!(
         SearchResult,
-        "SELECT title, url, content FROM pages WHERE language = $1 AND content LIKE $2",
+        "SELECT title, url FROM pages WHERE language = $1 AND content LIKE $2",
         language,
         query_string
     )
