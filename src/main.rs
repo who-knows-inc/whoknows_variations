@@ -38,7 +38,6 @@ async fn rocket() -> _ {
                 routes::pages::about,
                 routes::pages::login,
                 routes::pages::register,
-                routes::pages::search,
                 routes::pages::weather,
             ],
         )
