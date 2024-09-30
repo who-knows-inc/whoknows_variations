@@ -49,7 +49,7 @@ jobs:
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
           script: |
-            cd ${{ secrets.STAGING_DIR }}3
+            cd ${{ secrets.STAGING_DIR }}
             rm -rf migrations
             rm -rf templates
             rm -rf static
@@ -57,4 +57,6 @@ jobs:
             rm ${{ secrets.PKG }}
             tar -xzvf ${{ secrets.PKG }}.tar.gz
             rm ${{ secrets.PKG }}.tar.gz
+            sudo rm -rf /var/cache/nginx/ # Clear the Nginx cache
+            sudo mkdir -p /var/cache/nginx/ # Create the Nginx cache directory
             sudo systemctl restart ${{ secrets.SERVICE_NAME_STAGING }}.service
