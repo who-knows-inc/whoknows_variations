@@ -57,6 +57,7 @@ jobs:
             rm ${{ secrets.PKG }}
             tar -xzvf ${{ secrets.PKG }}.tar.gz
             rm ${{ secrets.PKG }}.tar.gz
-            sudo rm -rf /var/cache/nginx/ # Clear the Nginx cache
-            sudo mkdir -p /var/cache/nginx/ # Create the Nginx cache directory
+            sudo rm -rf /var/cache/nginx # Clear the Nginx cache
+            sudo mkdir /var/cache/nginx # Create the Nginx cache directory
+            sudo systemctl restart nginx
             sudo systemctl restart ${{ secrets.SERVICE_NAME_STAGING }}.service
