@@ -29,7 +29,7 @@ jobs:
         run: cargo install cargo-zigbuild
 
       - name: Build the application with deploy.sh
-        run: chmod +x deploy.sh && ./deploy.sh
+        run: sudo chmod +x deploy.sh && ./deploy.sh
 
       - name: Add the ssh private key to the github action runner
         run: mkdir -p ~/.ssh && echo "${{ secrets.DEPLOY_PRIVATE_KEY }}" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
