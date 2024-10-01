@@ -35,7 +35,7 @@ jobs:
         run: mkdir -p ~/.ssh && echo "${{ secrets.DEPLOY_PRIVATE_KEY }}" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
 
       - name: replace files on the remote server
-        run: rsync -avz -e ${{ secrets.PKG }}.tar.gz ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }}:${{ secrets.STAGING_DIR }}
+        run: rsync -avz -e ./${{ secrets.PKG }}.tar.gz ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }}:${{ secrets.STAGING_DIR }}
 
       - name: extract and run the app on the VM
         run: ssh ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} "cd ${{ secrets.STAGING_DIR }} && rm -rf migrations && rm -rf templates && rm -rf static && tar -xzvf ${{ secrets.PKG }}.tar.gz && rm ${{ secrets.PKG }}.tar.gz && sudo rm -rf /var/cache/nginx && sudo mkdir /var/cache/nginx && sudo systemctl restart nginx && sudo systemctl restart ${{ secrets.SERVICE_NAME_STAGING }}.service"
