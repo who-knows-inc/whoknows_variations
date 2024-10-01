@@ -21,13 +21,7 @@ jobs:
           toolchain: nightly
           profile: minimal
           override: true
-
-      - name: Install zig
-        run: sudo snap install zig --classic --beta
-
-      - name: Install cargo-zigbuild
-        run: cargo install cargo-zigbuild
-
+          
       - name: Build the application with deploy.sh
         run: sudo chmod +x deploy.sh && ./deploy.sh
 

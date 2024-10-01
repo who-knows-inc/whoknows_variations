@@ -6,7 +6,7 @@
 
 ## configure these for your environment
 PKG="whoknows_nooneknows"                       # cargo package name
-TARGET="x86_64-unknown-linux-gnu"               # remote target
+TARGET="$(rustc -Vv | grep host | awk '{print $2}')"  # Get the host target triple
 ASSETS=("Rocket.toml" "static" "templates" "migrations") # list of assets to bundle
 BUILD_DIR="target/${TARGET}/release"            # cargo build directory
 DEPLOY_DIR="deploy"                             # Temporary deployment directory
@@ -16,7 +16,7 @@ echo "Adding rust target $TARGET..."
 rustup target add $TARGET
 # Cross-compile
 echo "Building project..."
-cargo zigbuild --target $TARGET --release
+cargo build --release
 
 # Check if the binary was built successfully
 if [ ! -f "${BUILD_DIR}/${PKG}" ]; then
