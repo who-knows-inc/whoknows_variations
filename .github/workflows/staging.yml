@@ -21,7 +21,6 @@ jobs:
           toolchain: nightly
           profile: minimal
           override: true
-          
       - name: Build the application with deploy.sh
         run: sudo chmod +x deploy.sh && ./deploy.sh
 

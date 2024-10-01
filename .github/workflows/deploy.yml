@@ -49,11 +49,13 @@ jobs:
           key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
           script: |
             cd ${{ secrets.DEPLOY_DIR }}
-            rm -rf migrations
-            rm -rf templates
-            rm -rf static
-            rm -rf Rocket.toml
-            rm ${{ secrets.PKG }}
-            tar -xzvf ${{ secrets.PKG }}.tar.gz
-            rm ${{ secrets.PKG }}.tar.gz
-            sudo systemctl restart ${{ secrets.SERVICE_NAME }}.service
+            rm -rf migrations # Remove the migrations directory
+            rm -rf templates # Remove the templates directory
+            rm -rf static  # Remove the static directory
+            rm -rf Rocket.toml # Remove the Rocket.toml file
+            rm ${{ secrets.PKG }} # Remove the old package file
+            tar -xzvf ${{ secrets.PKG }}.tar.gz # Extract the new package file
+            rm ${{ secrets.PKG }}.tar.gz # Remove the tar.gz file
+            sudo rm -rf /var/cache/nginx/ # Clear the Nginx cache
+            sudo mkdir -p /var/cache/nginx/ # Create the Nginx cache directory
+            sudo systemctl restart ${{ secrets.SERVICE_NAME }}.service # Restart the service
