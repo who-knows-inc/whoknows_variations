@@ -16,7 +16,7 @@ use std::env;
 
 #[launch]
 async fn rocket() -> _ {
-    // Load environment variables from .env file (optional)
+    // Load environment variables from .env file
     dotenv().ok();
 
     // Create the database pool
@@ -38,7 +38,6 @@ async fn rocket() -> _ {
                 routes::pages::about,
                 routes::pages::login,
                 routes::pages::register,
-                routes::pages::search,
                 routes::pages::weather,
             ],
         )

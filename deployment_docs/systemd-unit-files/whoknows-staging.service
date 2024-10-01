@@ -1,0 +1,27 @@
+whoknows@whoknows-vm:~$ sudo cat /etc/systemd/system/whoknows-staging.service 
+[Unit]
+Description=Rocket Staging Application
+After=network.target
+
+[Service]
+Type=simple
+User=whoknows
+Group=whoknows
+WorkingDirectory=/var/www/whoknows-staging
+ExecStart=/var/www/whoknows-staging/whoknows_nooneknows
+StandardOutput=journal
+StandardError=journal
+
+# Environment variables
+Environment=ROCKET_ENV=default
+Environment=ROCKET_SECRET_KEY=702a835a27033e029aefc6f1948d01480ad3804c80fc25dff63129e8de8b788d
+Environment=DATABASE_URL=postgres://whoknows:kea2024@localhost/whoknows-staging
+Environment=STATIC_PATH=/var/www/whoknows-staging/static
+Environment=ROCKET_PORT=8001
+
+Restart=always
+RestartSec=5
+SyslogIdentifier=whoknows
+
+[Install]
+WantedBy=multi-user.target
