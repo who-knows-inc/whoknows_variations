@@ -90,8 +90,8 @@ jobs:
       - name: Deploy to server
         run: |
           ssh -i ~/.ssh/ssh_key -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << "EOF"
-            docker-compose pull
-            docker-compose --env-file /home/adminuser/.env up -d
+            sudo docker-compose pull
+            sudo docker-compose --env-file /home/adminuser/.env up -d
           EOF
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
