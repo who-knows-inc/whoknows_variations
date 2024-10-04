@@ -13,27 +13,27 @@ env:
   ENV_GREETING: ${{ secrets.ENV_GREETING }}
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  # build:
+  #   runs-on: ubuntu-latest
 
-    steps:
-    - name: Check Out Repository
-      uses: actions/checkout@v2
+  #   steps:
+  #   - name: Check Out Repository
+  #     uses: actions/checkout@v2
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+  #   - name: Set up Docker Buildx
+  #     uses: docker/setup-buildx-action@v1
 
-    - name: Log in to GitHub Container Registry
-      run: echo ${{ env.CR_PAT }} | docker login ghcr.io -u ${{ env.DOCKER_GITHUB_USERNAME }} --password-stdin
+  #   - name: Log in to GitHub Container Registry
+  #     run: echo ${{ env.CR_PAT }} | docker login ghcr.io -u ${{ env.DOCKER_GITHUB_USERNAME }} --password-stdin
 
-    - name: Build and Push Docker Images
-      working-directory: ./src
-      run: |
-        docker buildx bake -f docker-compose.prod.yml --push
+  #   - name: Build and Push Docker Images
+  #     working-directory: ./src
+  #     run: |
+  #       docker buildx bake -f docker-compose.prod.yml --push
 
 
   deploy:
-    needs: build
+    # needs: build
     runs-on: ubuntu-latest
     env:
       # Make sure that the SSH_USER has permission to run docker
