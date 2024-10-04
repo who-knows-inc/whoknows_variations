@@ -89,10 +89,11 @@ jobs:
     
       - name: Deploy to server
         run: |
-          ssh -i ~/.ssh/ssh_key -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << 'EOF'
+          ssh -i ~/.ssh/ssh_key -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << "EOF"
+            cd /home/$SSH_USER
             docker-compose pull
             docker-compose up -d
           EOF
-            env:
-              SSH_USER: ${{ secrets.SSH_USER }}
-              SSH_HOST: ${{ secrets.SSH_HOST }}
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
