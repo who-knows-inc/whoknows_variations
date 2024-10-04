@@ -1,0 +1,20 @@
+services:
+  whoknows_flask:
+    image: ghcr.io/who-knows-inc/whoknows_variations_server:latest
+    ports:
+      - "8080:8080"
+    networks:
+      - my_network
+
+  whoknows_nginx:
+    image: ghcr.io/who-knows-inc/whoknows_variations_nginx:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - whoknows_flask
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
