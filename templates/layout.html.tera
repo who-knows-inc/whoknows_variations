@@ -8,7 +8,7 @@
     <h1><a id="nav-logo" href="/">¿Who Knows? noone knows</a></h1>
     <a href="/weather" class="btn">Go to Weather Page</a>
     {% if user %}
-    <a id="nav-logout" href="/api/logout">Log out [{{ user.username }}]</a>
+    <a id="nav-logout" href="/logout">Log out [{{ user.username }}]</a>
     {% else %}
     <a id="nav-login" href="/login">Log in</a>
     <a id="nav-register" href="/register">Register</a>
