@@ -8,31 +8,62 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
+    # Define PostgreSQL as a service
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    # Set environment variables
     env:
-      POSTGRES_DB: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_USER: postgres
       DATABASE_URL: postgres://postgres:postgres@localhost/postgres
+      # Optionally, export other environment variables if needed
+      # e.g., export RUST_LOG=info
 
     steps:
+      # 1. Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # 2. Set up Rust toolchain
       - name: Set up Rust
         uses: actions-rs/toolchain@v1
         with:
           toolchain: nightly
           override: true
+          components: rustfmt, clippy # Add components if needed
 
-      - name: Set up postgresql container
-        run: docker run --name postgres -e POSTGRES_PASSWORD=postgres -d postgres:latest
+      # 3. Install SQLx CLI
+      - name: Install SQLx CLI
+        run: cargo install sqlx-cli --no-default-features --features native-tls,postgres
 
-      - name: Set up SQLx
-        run: cargo install sqlx-cli --no-default-features --features postgres
+      # 4. Wait for PostgreSQL to be ready
+      - name: Wait for PostgreSQL
+        run: |
+          for i in {1..10}; do
+            sqlx database create && break
+            echo "Waiting for PostgreSQL to be ready..."
+            sleep 5
+          done
 
-      - name: Set up migrations
+      # 5. Run SQLx Migrations
+      - name: Run SQLx Migrations
         run: sqlx migrate run
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
 
+      # 6. Cache Cargo Registry
       - name: Cache Cargo Registry
         uses: actions/cache@v3
         with:
@@ -41,6 +72,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-registry-
 
+      # 7. Cache Cargo Build
       - name: Cache Cargo Build
         uses: actions/cache@v3
         with:
@@ -49,14 +81,37 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-build-
 
+      # 8. Build the Application
       - name: Build the application with deploy.sh
-        run: sudo chmod +x deploy.sh && ./deploy.sh
+        run: |
+          chmod +x deploy.sh
+          ./deploy.sh
 
-      - name: Add the ssh private key to the github action runner
-        run: mkdir -p ~/.ssh && echo "${{ secrets.DEPLOY_PRIVATE_KEY }}" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
+      # 9. Add SSH Private Key to Runner
+      - name: Add SSH Private Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
 
-      - name: replace files on the remote server
-        run: rsync -e "ssh -o StrictHostKeyChecking=no" -az --stats --human-readable --delete --progress ./${{ secrets.PKG }}.tar.gz ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }}:${{ secrets.STAGING_DIR }}
+      # 10. Replace Files on the Remote Server
+      - name: Replace files on the remote server
+        run: |
+          rsync -e "ssh -o StrictHostKeyChecking=no" -az --stats --human-readable --delete --progress ./${{ secrets.PKG }}.tar.gz ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }}:${{ secrets.STAGING_DIR }}
 
-      - name: extract and run the app on the VM
-        run: ssh ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} "cd ${{ secrets.STAGING_DIR }} && rm -rf migrations && rm -rf templates && rm -rf static && tar -xzvf ${{ secrets.PKG }}.tar.gz && rm ${{ secrets.PKG }}.tar.gz && sudo rm -rf /var/cache/nginx && sudo mkdir /var/cache/nginx && sudo systemctl restart nginx && sudo systemctl restart ${{ secrets.SERVICE_NAME_STAGING }}.service"
+      # 11. Extract and Run the App on the VM
+      - name: Extract and run the app on the VM
+        run: |
+          ssh ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} "
+            cd ${{ secrets.STAGING_DIR }} &&
+            rm -rf migrations templates static &&
+            tar -xzvf ${{ secrets.PKG }}.tar.gz &&
+            rm ${{
+              secrets.PKG
+            }}.tar.gz &&
+            sudo rm -rf /var/cache/nginx &&
+            sudo mkdir /var/cache/nginx &&
+            sudo systemctl restart nginx &&
+            sudo systemctl restart ${{ secrets.SERVICE_NAME_STAGING }}.service
+          "
