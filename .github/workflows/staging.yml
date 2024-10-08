@@ -9,7 +9,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      SQLX_OFFLINE: "true" # Ensure offline mode is enabled
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      DATABASE_URL: postgres://postgres:postgres@localhost/postgres
 
     steps:
       - name: Checkout repository
@@ -20,6 +23,15 @@ jobs:
         with:
           toolchain: nightly
           override: true
+
+      - name: Set up postgresql container
+        run: docker run --name postgres -e POSTGRES_PASSWORD=postgres -d postgres:latest
+
+      - name: Set up SQLx
+        run: cargo install sqlx-cli --no-default-features --features postgres
+
+      - name: Set up migrations
+        run: sqlx migrate run
 
       - name: Cache Cargo Registry
         uses: actions/cache@v3
