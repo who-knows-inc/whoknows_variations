@@ -16,7 +16,7 @@ echo "Adding rust target $TARGET..."
 rustup target add $TARGET
 # Cross-compile
 echo "Building project..."
-cargo build --release
+cargo build --release --target $TARGET
 
 # Check if the binary was built successfully
 if [ ! -f "${BUILD_DIR}/${PKG}" ]; then
