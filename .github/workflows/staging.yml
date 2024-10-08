@@ -28,8 +28,6 @@ jobs:
     # Set environment variables
     env:
       DATABASE_URL: postgres://postgres:postgres@localhost/postgres
-      # Optionally, export other environment variables if needed
-      # e.g., export RUST_LOG=info
 
     steps:
       # 1. Checkout the repository
@@ -105,7 +103,7 @@ jobs:
         run: |
           ssh ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} "
             cd ${{ secrets.STAGING_DIR }} &&
-            rm -rf migrations templates static &&
+            rm -rf migrations templates static ${{ secrets.PKG }} &&
             tar -xzvf ${{ secrets.PKG }}.tar.gz &&
             rm ${{
               secrets.PKG
