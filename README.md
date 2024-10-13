@@ -8,13 +8,13 @@ This tutorial focuses on how you can achieve TLS with Nginx.
 
 The assumption is that you have a code for https://www.one.com and the tutorial will show you how to you register your domain. 
 
-If you have a domain registered with a different provider, then feel free to skip this part.
+If you have a domain registered with a different provider, then feel free to skip this part and jump straight to the last part for how to setup the certificate on the server.
 
 ---
 
 ## The tutorials
 
-[01. Setting up in one.com](./tutorials/01._setting_up_in_one.com.md)
+[01. Setting up in one.com](./tutorials/01._registering_domains_with_one.com.md)
 
 [02. Setting up in one.com](./tutorials/02._setting_up_in_one.com.md)
 
