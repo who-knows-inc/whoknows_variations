@@ -66,7 +66,12 @@ jobs:
 
       # 6. Install SQLx CLI
       - name: Install SQLx CLI
-        run: cargo install sqlx-cli --no-default-features --features native-tls,postgres
+        run: |
+          if ! command -v sqlx &> /dev/null; then
+            cargo install sqlx-cli --no-default-features --features native-tls,postgres
+          else
+            echo "SQLx CLI is already installed"
+          fi
 
       # 7. Wait for PostgreSQL to be ready
       - name: Wait for PostgreSQL
