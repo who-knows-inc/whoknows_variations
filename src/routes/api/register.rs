@@ -1,19 +1,15 @@
-use rocket::form::Form;
-use rocket::response::Redirect;
-use rocket::serde::json::Json;
+use crate::security::security::hash_password;
+use rocket::serde::{json::Json, Deserialize, Serialize};
 use rocket::State;
-use serde::Serialize;
 use sqlx::PgPool;
 
-use crate::models::user::User;
-use crate::security::security::hash_password;
 #[derive(Serialize)]
 pub struct RegisterResponse {
     pub success: bool,
     pub message: String,
 }
 
-#[derive(FromForm)]
+#[derive(Deserialize)]
 pub struct RegisterRequest {
     pub username: String,
     pub password: String,
@@ -21,70 +17,84 @@ pub struct RegisterRequest {
     pub email: String,
 }
 
-#[post("/register", data = "<register_request>")]
+#[post("/register", format = "application/json", data = "<register_request>")]
 pub async fn register(
-    register_request: Form<RegisterRequest>,
+    register_request: Json<RegisterRequest>,
     pool: &State<PgPool>,
-) -> Result<Redirect, Json<RegisterResponse>> {
-    // Get the register request from the form data
+) -> Json<RegisterResponse> {
     let register_request = register_request.into_inner();
 
     // Check if the passwords match
     if register_request.password != register_request.password2 {
-        return Err(Json(RegisterResponse {
+        return Json(RegisterResponse {
             success: false,
             message: "Passwords do not match".to_string(),
-        }));
+        });
     }
+
     // Acquire a connection from the pool
-    let mut conn = pool.acquire().await.unwrap();
+    let mut conn = match pool.acquire().await {
+        Ok(conn) => conn,
+        Err(_) => {
+            return Json(RegisterResponse {
+                success: false,
+                message: "Database connection error".to_string(),
+            })
+        }
+    };
 
     // Query the database for the user
-    let user = match sqlx::query_as!(
-        User,
-        "SELECT * FROM users WHERE username = $1 OR email = $2",
+    let user_exists = sqlx::query!(
+        "SELECT username, email FROM users WHERE username = $1 OR email = $2",
         register_request.username,
         register_request.email
     )
-    .fetch_one(&mut conn)
+    .fetch_optional(&mut conn)
+    .await;
+
+    match user_exists {
+        Ok(Some(user)) => {
+            if user.username == register_request.username {
+                return Json(RegisterResponse {
+                    success: false,
+                    message: "Username already taken".to_string(),
+                });
+            } else if user.email == register_request.email {
+                return Json(RegisterResponse {
+                    success: false,
+                    message: "Email already taken".to_string(),
+                });
+            }
+        }
+        Ok(None) => {}
+        Err(_) => {
+            return Json(RegisterResponse {
+                success: false,
+                message: "Database error occurred".to_string(),
+            })
+        }
+    }
+
+    // Hash the password and insert it into the database
+    let hashed_password = hash_password(&register_request.password);
+
+    // Insert the user into the database
+    match sqlx::query!(
+        "INSERT INTO users (username, email, password) VALUES ($1, $2, $3)",
+        register_request.username,
+        register_request.email,
+        hashed_password
+    )
+    .execute(&mut conn)
     .await
     {
-        Ok(user) => user,
-        Err(_) => User {
-            id: 0,
-            username: "".to_string(),
-            email: "".to_string(),
-            password: "".to_string(),
-        },
-    };
-    // Check if the username is already taken
-    if user.username == register_request.username {
-        return Err(Json(RegisterResponse {
+        Ok(_) => Json(RegisterResponse {
+            success: true,
+            message: "Registration successful".to_string(),
+        }),
+        Err(_) => Json(RegisterResponse {
             success: false,
-            message: "Username already taken".to_string(),
-        }));
-        // Check if the email is already taken
-    } else if user.email == register_request.email {
-        return Err(Json(RegisterResponse {
-            success: false,
-            message: "Email already taken".to_string(),
-        }));
-    } else {
-        // Hash the password and insert it into the database
-        let hashed_password = hash_password(&register_request.password);
-
-        // Insert the user into the database
-        sqlx::query!(
-            "INSERT INTO users (username, email, password) VALUES ($1, $2, $3)",
-            register_request.username,
-            register_request.email,
-            hashed_password
-        )
-        .execute(&mut conn)
-        .await
-        .unwrap();
-
-        // Redirect the user to the home page
-        Ok(Redirect::to("/"))
+            message: "Failed to create user".to_string(),
+        }),
     }
 }
