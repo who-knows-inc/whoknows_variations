@@ -1,33 +1,13 @@
-whoknows@whoknows-vm:~$ sudo cat /etc/nginx/sites-available/whoknows-staging.dk server {
+  GNU nano 7.2                                      /etc/nginx/sites-available/whoknows-staging.dk                                                
+server {
     listen 8080;
     server_name staging.whoknows.dk;
 
     access_log /var/log/nginx/whoknows-staging_access.log;
     error_log /var/log/nginx/whoknows-staging_error.log warn;
 
-    location ~* ^/(/logout|api/login|api/logout|api/register|user/profile) {
-    proxy_pass http://127.0.0.1:8001;
-
-    # Bypass cache for these requests
-    proxy_cache_bypass $uri;
-    proxy_no_cache $uri;
-
-    # Set headers
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
-    }
-
-
     location / {
         proxy_pass http://127.0.0.1:8001;
-	
-        # Enable caching
-        proxy_cache my_cache;
-        proxy_cache_valid 200 302 60m;  # Cache 200 and 302 responses for 60 minutes
-        proxy_cache_valid 404 1m;       # Cache 404 responses for 1 minute
-        add_header X-Cache-Status $upstream_cache_status;
 
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -45,3 +25,5 @@ whoknows@whoknows-vm:~$ sudo cat /etc/nginx/sites-available/whoknows-staging.dk 
         root /usr/share/nginx/html;
     }
 }
+
+
