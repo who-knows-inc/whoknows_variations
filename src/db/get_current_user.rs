@@ -4,9 +4,9 @@ use sqlx::PgPool;
 
 pub async fn get_current_user(cookies: &CookieJar<'_>, db_pool: &PgPool) -> Option<User> {
     // Print the cookies
-    println!("Cookies: {:?}", cookies.get("user_id"));
-    // Retrieve the private cookie named "user_id"
-    if let Some(cookie) = cookies.get("user_id") {
+    println!("Cookies: {:?}", cookies.get_private("auth_token"));
+    // Retrieve the private cookie named "auth_token"
+    if let Some(cookie) = cookies.get_private("auth_token") {
         // Parse the user ID from the cookie
         if let Ok(user_id) = cookie.value().parse::<i32>() {
             // Query the database for the user
@@ -17,14 +17,14 @@ pub async fn get_current_user(cookies: &CookieJar<'_>, db_pool: &PgPool) -> Opti
                 Ok(user) => Some(user),
                 Err(sqlx::Error::RowNotFound) => {
                     // User not found; remove the invalid cookie
-                    cookies.remove(Cookie::from("user_id"));
+                    cookies.remove_private(Cookie::from("auth_token"));
                     None
                 }
                 Err(_) => None, // Handle other errors as needed
             }
         } else {
             // Invalid user ID in cookie; remove it
-            cookies.remove(Cookie::from("user_id"));
+            cookies.remove_private(Cookie::from("auth_token"));
             None
         }
     } else {

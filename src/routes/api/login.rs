@@ -23,7 +23,7 @@ pub struct LoginRequest {
 pub async fn login(
     login_request: Json<LoginRequest>,
     pool: &State<PgPool>,
-    cookies: &CookieJar<'_>,
+    cookies: &CookieJar<'_>, // cookies is a type alias for Cookies
 ) -> Json<LoginResponse> {
     let login_request = login_request.into_inner();
     println!("Attempting login for user: {}", login_request.username);
@@ -51,7 +51,7 @@ pub async fn login(
         Ok(user) => {
             if verify_password(&user.password, &login_request.password) {
                 println!("User '{}' authenticated successfully.", user.username);
-                cookies.add(Cookie::new("user_id", user.id.to_string()));
+                cookies.add_private(Cookie::new("auth_token", user.id.to_string()));
                 Json(LoginResponse {
                     success: true,
                     message: "Login successful".to_string(),
@@ -95,7 +95,7 @@ pub struct LogoutRequest {
 #[get("/logout")]
 pub async fn logout(cookies: &CookieJar<'_>) -> Redirect {
     // Remove the user's cookie
-    cookies.remove(Cookie::from("user_id"));
+    cookies.remove_private("auth_token");
 
     // Redirect the user to the home page
     Redirect::to("/")
