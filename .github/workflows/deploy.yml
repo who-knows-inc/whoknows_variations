@@ -110,8 +110,6 @@ jobs:
             rm -rf migrations templates static ${{ secrets.PKG }} &&
             tar -xzvf ${{ secrets.PKG }}.tar.gz &&
             rm ${{ secrets.PKG }}.tar.gz &&
-            sudo rm -rf /var/cache/nginx &&
-            sudo mkdir /var/cache/nginx &&
             sudo systemctl restart nginx &&
             sudo systemctl restart ${{ secrets.SERVICE_NAME }}.service
           "
