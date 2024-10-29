@@ -8,7 +8,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
-    # Define PostgreSQL as a service
     services:
       postgres:
         image: postgres:latest
@@ -24,7 +23,6 @@ jobs:
           --health-timeout=5s
           --health-retries=5
 
-    # Set environment variables
     env:
       DATABASE_URL: postgres://postgres:postgres@localhost/postgres
 
@@ -33,19 +31,44 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Set up Rust toolchain
+      # 2. Cache Rust toolchain
+      - name: Cache Rust toolchain
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.rustup
+            ~/.cargo/bin
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-rust-${{ hashFiles('**/rust-toolchain.toml', '**/Cargo.lock') }}
+
+      # 3. Cache Cargo Registry
+      - name: Cache Cargo Registry
+        uses: actions/cache@v3
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+
+      # 4. Cache Cargo Build
+      - name: Cache Cargo Build
+        uses: actions/cache@v3
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
+
+      # 5. Set up Rust toolchain
       - name: Set up Rust
         uses: actions-rs/toolchain@v1
         with:
           toolchain: nightly
           override: true
-          components: rustfmt, clippy # Add components if needed
+          components: rustfmt, clippy
 
-      # 3. Install SQLx CLI
+      # 6. Install SQLx CLI
       - name: Install SQLx CLI
         run: cargo install sqlx-cli --no-default-features --features native-tls,postgres
 
-      # 4. Wait for PostgreSQL to be ready
+      # 7. Wait for PostgreSQL to be ready
       - name: Wait for PostgreSQL
         run: |
           for i in {1..10}; do
@@ -54,37 +77,19 @@ jobs:
             sleep 5
           done
 
-      # 5. Run SQLx Migrations
+      # 8. Run SQLx Migrations
       - name: Run SQLx Migrations
         run: sqlx migrate run
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
 
-      # 6. Cache Cargo Registry
-      - name: Cache Cargo Registry
-        uses: actions/cache@v3
-        with:
-          path: ~/.cargo/registry
-          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-registry-
-
-      # 7. Cache Cargo Build
-      - name: Cache Cargo Build
-        uses: actions/cache@v3
-        with:
-          path: target
-          key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-build-
-
-      # 8. Build the Application
+      # 9. Build the Application
       - name: Build the application with deploy.sh
         run: |
           chmod +x deploy.sh
           ./deploy.sh
 
-      # 9. Add SSH Private Key to Runner
+      # 10. Add SSH Private Key to Runner
       - name: Add SSH Private Key
         run: |
           mkdir -p ~/.ssh
@@ -92,21 +97,19 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
 
-      # 10. Replace Files on the Remote Server
+      # 11. Replace Files on the Remote Server
       - name: Replace files on the remote server
         run: |
           rsync -e "ssh -o StrictHostKeyChecking=no" -az --stats --human-readable --delete --progress ./${{ secrets.PKG }}.tar.gz ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }}:${{ secrets.DEPLOY_DIR }}
 
-      # 11. Extract and Run the App on the VM
+      # 12. Extract and Run the App on the VM
       - name: Extract and run the app on the VM
         run: |
           ssh ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} "
             cd ${{ secrets.DEPLOY_DIR }} &&
             rm -rf migrations templates static ${{ secrets.PKG }} &&
             tar -xzvf ${{ secrets.PKG }}.tar.gz &&
-            rm ${{
-              secrets.PKG
-            }}.tar.gz &&
+            rm ${{ secrets.PKG }}.tar.gz &&
             sudo rm -rf /var/cache/nginx &&
             sudo mkdir /var/cache/nginx &&
             sudo systemctl restart nginx &&
