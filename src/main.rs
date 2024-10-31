@@ -49,6 +49,7 @@ async fn rocket() -> _ {
                 routes::api::register::register,
                 routes::api::weather::fetch_weather_data,
                 routes::api::search::search,
+                routes::api::delete_user::delete_user,
             ],
         )
 }
