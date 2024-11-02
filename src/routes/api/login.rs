@@ -94,6 +94,7 @@ pub struct LogoutRequest {
 
 #[get("/logout")]
 pub async fn logout(cookies: &CookieJar<'_>) -> Redirect {
+    println!("Logging out user");
     // Remove the user's cookie
     cookies.remove_private("auth_token");
 
