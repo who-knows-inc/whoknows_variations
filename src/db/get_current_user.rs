@@ -3,8 +3,6 @@ use rocket::http::{Cookie, CookieJar};
 use sqlx::PgPool;
 
 pub async fn get_current_user(cookies: &CookieJar<'_>, db_pool: &PgPool) -> Option<User> {
-    // Print the cookies
-    println!("Cookies: {:?}", cookies.get_private("auth_token"));
     // Retrieve the private cookie named "auth_token"
     if let Some(cookie) = cookies.get_private("auth_token") {
         // Parse the user ID from the cookie

@@ -1,5 +1,3 @@
-// src/fairings/connection_checker.rs
-
 use rocket::fairing::{Fairing, Info, Kind};
 use rocket::outcome::Outcome;
 use rocket::{Data, Request, State};
@@ -19,7 +17,8 @@ impl Fairing for DbConnectionChecker {
     async fn on_request(&self, request: &mut Request<'_>, _: &mut Data<'_>) {
         // Get the database pool from the request's managed state
         println!("Checking database connection...");
-
+        // Print out the request
+        println!("Request: {:?}", request);
         if let Outcome::Success(pool) = request.guard::<&State<PgPool>>().await {
             // Try to acquire a connection
             if let Err(e) = pool.acquire().await {
