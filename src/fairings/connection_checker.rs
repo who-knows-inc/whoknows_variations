@@ -17,13 +17,13 @@ impl Fairing for DbConnectionChecker {
     async fn on_request(&self, request: &mut Request<'_>, _: &mut Data<'_>) {
         // Get the database pool from the request's managed state
         println!("Checking database connection...");
-        // Print out the request
-        println!("Request: {:?}", request);
+        // Print out the request path
+        println!("Request path: {:?}", request.uri());
+        println!("Request method: {:?}", request.method());
+        println!("Request headers: {:?}", request.headers());
         if let Outcome::Success(pool) = request.guard::<&State<PgPool>>().await {
-            // Try to acquire a connection
             if let Err(e) = pool.acquire().await {
                 eprintln!("Failed to acquire database connection: {:?}", e);
-                // You can handle the error here, e.g., set a status or add info to the request
             }
         } else {
             eprintln!("Database pool not available in the request state");
