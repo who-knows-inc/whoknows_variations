@@ -23,9 +23,13 @@ pub async fn register(
     pool: &State<PgPool>,
 ) -> Json<RegisterResponse> {
     let register_request = register_request.into_inner();
-
+    println!(
+        "Attempting registration for user: {}, with email: {}",
+        register_request.username, register_request.email
+    );
     // Check if the passwords match
     if register_request.password != register_request.password2 {
+        println!("ERROR: Passwords do not match");
         return Json(RegisterResponse {
             success: false,
             message: "Passwords do not match".to_string(),
@@ -35,11 +39,12 @@ pub async fn register(
     // Acquire a connection from the pool
     let mut conn = match pool.acquire().await {
         Ok(conn) => conn,
-        Err(_) => {
+        Err(e) => {
+            eprintln!("Failed to acquire connection: {:?}", e);
             return Json(RegisterResponse {
                 success: false,
-                message: "Database connection error".to_string(),
-            })
+                message: "ERROR: Database connection error".to_string(),
+            });
         }
     };
 
@@ -55,11 +60,13 @@ pub async fn register(
     match user_exists {
         Ok(Some(user)) => {
             if user.username == register_request.username {
+                println!("ERROR: Username already taken");
                 return Json(RegisterResponse {
                     success: false,
                     message: "Username already taken".to_string(),
                 });
             } else if user.email == register_request.email {
+                println!("ERROR: Email already taken");
                 return Json(RegisterResponse {
                     success: false,
                     message: "Email already taken".to_string(),
@@ -68,10 +75,11 @@ pub async fn register(
         }
         Ok(None) => {}
         Err(_) => {
+            println!("ERROR: Database error occurred");
             return Json(RegisterResponse {
                 success: false,
                 message: "Database error occurred".to_string(),
-            })
+            });
         }
     }
 
@@ -88,13 +96,19 @@ pub async fn register(
     .execute(&mut conn)
     .await
     {
-        Ok(_) => Json(RegisterResponse {
-            success: true,
-            message: "Registration successful".to_string(),
-        }),
-        Err(_) => Json(RegisterResponse {
-            success: false,
-            message: "Failed to create user".to_string(),
-        }),
+        Ok(_) => {
+            println!("Registration successful");
+            Json(RegisterResponse {
+                success: true,
+                message: "Registration successful".to_string(),
+            })
+        }
+        Err(_) => {
+            println!("ERROR: Failed to create user");
+            Json(RegisterResponse {
+                success: false,
+                message: "Failed to create user".to_string(),
+            })
+        }
     }
 }

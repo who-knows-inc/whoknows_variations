@@ -29,7 +29,7 @@ pub async fn delete_user(
     cookies: &CookieJar<'_>,
 ) -> Json<DeleteUserResponse> {
     let delete_user_request = delete_user_request.into_inner();
-
+    println!("Attempting to delete user: {}", delete_user_request.email);
     // Acquire a connection from the pool
     let mut conn = match pool.acquire().await {
         Ok(conn) => conn,

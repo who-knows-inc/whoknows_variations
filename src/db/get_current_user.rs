@@ -14,6 +14,7 @@ pub async fn get_current_user(cookies: &CookieJar<'_>, db_pool: &PgPool) -> Opti
             {
                 Ok(user) => Some(user),
                 Err(sqlx::Error::RowNotFound) => {
+                    println!("User not found; removing invalid cookie");
                     // User not found; remove the invalid cookie
                     cookies.remove_private(Cookie::from("auth_token"));
                     None
@@ -21,11 +22,13 @@ pub async fn get_current_user(cookies: &CookieJar<'_>, db_pool: &PgPool) -> Opti
                 Err(_) => None, // Handle other errors as needed
             }
         } else {
+            println!("Invalid user ID in cookie; removing it");
             // Invalid user ID in cookie; remove it
             cookies.remove_private(Cookie::from("auth_token"));
             None
         }
     } else {
+        println!("No user ID cookie found");
         // No user ID cookie found
         None
     }
