@@ -19,7 +19,7 @@ pub async fn about(cookies: &CookieJar<'_>, db_pool: &State<PgPool>) -> Template
 
 #[get("/login")]
 pub async fn login(cookies: &CookieJar<'_>, db_pool: &State<PgPool>) -> Template {
-    if let Some(user) = get_current_user(&cookies, &db_pool).await {
+    if let Some(user) = get_current_user(cookies, db_pool).await {
         Template::render("/", context! { user: user })
     } else {
         Template::render("login", context! {})
@@ -28,7 +28,7 @@ pub async fn login(cookies: &CookieJar<'_>, db_pool: &State<PgPool>) -> Template
 
 #[get("/register")]
 pub async fn register(cookies: &CookieJar<'_>, db_pool: &State<PgPool>) -> Template {
-    if let Some(user) = get_current_user(&cookies, &db_pool).await {
+    if let Some(user) = get_current_user(cookies, db_pool).await {
         Template::render("/", context! { user: user })
     } else {
         Template::render("register", context! {})

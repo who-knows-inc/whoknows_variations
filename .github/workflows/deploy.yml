@@ -27,13 +27,11 @@ jobs:
       DATABASE_URL: postgres://postgres:postgres@localhost/postgres
 
     steps:
-      # 1. Checkout the repository
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # 2. Cache Rust toolchain
       - name: Cache Rust toolchain
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/.rustup
@@ -42,26 +40,22 @@ jobs:
             ~/.cargo/git
           key: ${{ runner.os }}-rust-${{ hashFiles('**/rust-toolchain.toml', '**/Cargo.lock') }}
 
-      # 3. Cache Cargo Registry
       - name: Cache Cargo Registry
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cargo/registry
           key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
 
-      # 4. Cache Cargo Build
       - name: Cache Cargo Build
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: target
           key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
 
-      # 5. Set up Rust toolchain
       - name: Set up Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: nightly
-          override: true
           components: rustfmt, clippy
 
       # 6. Install SQLx CLI
