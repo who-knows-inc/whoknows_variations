@@ -30,7 +30,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Cache Rust toolchain
+      - name: Cache Rust/Cargo artifacts
         uses: actions/cache@v4
         with:
           path: |
@@ -38,19 +38,10 @@ jobs:
             ~/.cargo/bin
             ~/.cargo/registry
             ~/.cargo/git
-          key: ${{ runner.os }}-rust-${{ hashFiles('**/rust-toolchain.toml', '**/Cargo.lock') }}
-
-      - name: Cache Cargo Registry
-        uses: actions/cache@v4
-        with:
-          path: ~/.cargo/registry
-          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
-
-      - name: Cache Cargo Build
-        uses: actions/cache@v4
-        with:
-          path: target
-          key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
+            target
+          key: ${{ runner.os }}-rust-cargo-${{ hashFiles('**/Cargo.lock', '**/rust-toolchain.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-rust-cargo-
 
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@stable
@@ -58,7 +49,6 @@ jobs:
           toolchain: nightly
           components: rustfmt, clippy
 
-      # 6. Install SQLx CLI
       - name: Install SQLx CLI
         run: |
           if ! command -v sqlx &> /dev/null; then
@@ -67,7 +57,6 @@ jobs:
             echo "SQLx CLI is already installed"
           fi
 
-      # 7. Wait for PostgreSQL to be ready
       - name: Wait for PostgreSQL
         run: |
           for i in {1..10}; do
@@ -76,19 +65,16 @@ jobs:
             sleep 5
           done
 
-      # 8. Run SQLx Migrations
       - name: Run SQLx Migrations
         run: sqlx migrate run
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
 
-      # 9. Build the Application
       - name: Build the application with deploy.sh
         run: |
           chmod +x deploy.sh
           ./deploy.sh
 
-      # 10. Add SSH Private Key to Runner
       - name: Add SSH Private Key
         run: |
           mkdir -p ~/.ssh
@@ -96,12 +82,10 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
 
-      # 11. Replace Files on the Remote Server
       - name: Replace files on the remote server
         run: |
           rsync -e "ssh -o StrictHostKeyChecking=no" -az --stats --human-readable --delete --progress ./${{ secrets.PKG }}.tar.gz ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }}:${{ secrets.DEPLOY_DIR }}
 
-      # 12. Extract and Run the App on the VM
       - name: Extract and run the app on the VM
         run: |
           ssh ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} "
