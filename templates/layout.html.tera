@@ -1,27 +1,95 @@
 <!doctype html>
 <html lang="en">
-<title>¿Who Knows?</title>
-<link rel="stylesheet" type="text/css" href="/static/style.css">
-<div class="page">
-  <div class="navigation">
-  <nav>
-    <h1><a id="nav-logo" href="/">¿Who Knows? noone knows</a></h1>
-    <a href="/weather" class="btn">Go to Weather Page</a>
-    {% if user %}
-    <a id="nav-logout" href="/api/logout">Log out [{{ user.username }}]</a>
-    {% else %}
-    <a id="nav-login" href="/login">Log in</a>
-    <a id="nav-register" href="/register">Register</a>
-    {% endif %}
-  </nav>
-  </div>
+<head>
+    <title>¿Who Knows?</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <style>
+      #toast {
+          visibility: hidden;
+          min-width: 250px;
+          background-color: #4CAF50; /* Green background */
+          color: #fff;
+          text-align: center;
+          border-radius: 4px;
+          padding: 16px;
+          position: fixed;
+          z-index: 1000;
+          right: 30px;  /* Position from right */
+          top: 30px;    /* Position from top */
+          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      }
   
-  <div class="body">
-  {% block body %}{% endblock %}
-  </div>
-  <div class="footer">
-    <span>¿Who Knows? &copy; 2009</span>
-    <a href="/about">About</a>
-  </div>
-</div>
+      #toast.show {
+          visibility: visible;
+          -webkit-animation: slidein 0.5s, slideout 0.5s 4.5s;
+          animation: slidein 0.5s, slideout 0.5s 4.5s;
+      }
+  
+      @-webkit-keyframes slidein {
+          from {right: -300px; opacity: 0;}
+          to {right: 30px; opacity: 1;}
+      }
+  
+      @keyframes slidein {
+          from {right: -300px; opacity: 0;}
+          to {right: 30px; opacity: 1;}
+      }
+  
+      @-webkit-keyframes slideout {
+          from {right: 30px; opacity: 1;}
+          to {right: -300px; opacity: 0;}
+      }
+  
+      @keyframes slideout {
+          from {right: 30px; opacity: 1;}
+          to {right: -300px; opacity: 0;}
+      }
+  </style>
+</head>
+<body>
+    <div class="page">
+        <div class="navigation">
+            <nav>
+                <h1><a id="nav-logo" href="/">¿Who Knows? noone knows</a></h1>
+                <a href="/weather" class="btn">Go to Weather Page</a>
+                {% if user %}
+                <a id="nav-logout" href="/logout">Log out [{{ user.username }}]</a>
+                {% else %}
+                <a id="nav-login" href="/login">Log in</a>
+                <a id="nav-register" href="/register">Register</a>
+                {% endif %}
+            </nav>
+        </div>
+        
+        <div class="body">
+        {% block body %}{% endblock %}
+        </div>
+        <div class="footer">
+            <span>¿Who Knows? &copy; 2009</span>
+            <a href="/about">About</a>
+        </div>
+
+        <div id="toast"></div>
+    </div>
+
+    <script>
+        function showToast(message) {
+            var toast = document.getElementById("toast");
+            toast.textContent = message;
+            toast.className = "show";
+            setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 5000);
+        }
+
+        // Check for success message in URL parameters
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const successMessage = urlParams.get('success_message');
+            if (successMessage) {
+                showToast(decodeURIComponent(successMessage));
+                // Remove the success_message from the URL without reloading the page
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        }
+    </script>
+</body>
 </html>

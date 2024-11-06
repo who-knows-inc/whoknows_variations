@@ -5,23 +5,77 @@
     <h1>Who Knows? No one knows. Do you know?</h1>
     <p>This is the homepage. Search for anything you want to know.</p>
 
-    <!-- Search Form -->
-    <form action="/api/search" method="get">
+    <div id="error-message" class="error" style="display: none;">
+        <strong>Error:</strong> <span id="error-text"></span>
+      </div>
+    
+
+     <!-- Search Form -->
+     <form id="search-form">     
+        {# two checkboxes for language selection #}
+        <div id="language-selection">
+            <div>
+                <label for="language-en">English</label>
+                <input type="radio" id="language-en" name="language" value="en" checked>
+            </div>
+            <div>
+                <label for="language-da">Dansk</label>
+                <input type="radio" id="language-da" name="language" value="da">
+            </div>
+        </div>
+
         <input type="text" name="q" placeholder="Search...">
-        <input type="hidden" name="language" value="en">
-        <button type="submit">Search</button>
+        <div class="actions">
+            <input type="submit" value="Search">
+          </div>    
     </form>
 
-    <div id="results">
-        {% if search_results is defined and search_results | length == 0 %}
-            <p>No results found</p>
-        {% elif search_results is defined %}
-            {% for result in search_results %}
-                <div>
-                    <h2><a class="search-result-title" href="{{ result.url }}">{{ result.title }}</a></h2>
-                    <p class="search-result-description">{{ result.content or 'No description available' }}</p>
-                </div>
-            {% endfor %}
-        {% endif %}
-    </div>
+
+    <div id="results"></div>
+
+    <script>
+        document.getElementById('search-form').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const formData = new FormData(this);
+            const language = formData.get('language');
+            const q = formData.get('q');
+
+            try {
+                const response = await fetch('/api/search?language=' + language + '&q=' + q, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.length > 0) {
+                    // Display the search results
+                    const resultsDiv = document.getElementById('results');
+                    resultsDiv.innerHTML = ''; // Clear the results div
+                    result.forEach(function(result) {
+                        const resultDiv = document.createElement('div');
+                        resultDiv.classList.add('search-result');
+                        const title = document.createElement('h2');
+                        title.innerHTML = '<a href="' + result.url + '">' + result.title + '</a>';
+                        resultDiv.appendChild(title);
+                        resultsDiv.appendChild(resultDiv);
+                    });
+                   
+                } else {
+                    // Display the "No results found" message
+                    const resultsDiv = document.getElementById('results');
+                    resultsDiv.innerHTML = '<p>No results found</p>';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                const errorDiv = document.getElementById('error-message');
+                const errorText = document.getElementById('error-text');
+                errorText.textContent = 'An error occurred.';
+                errorDiv.style.display = 'block';
+            }
+        });
+    </script>
 {% endblock %}

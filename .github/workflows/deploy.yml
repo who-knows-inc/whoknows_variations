@@ -7,53 +7,114 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     env:
-      SQLX_OFFLINE: "true" # Ensure offline mode is enabled
+      DATABASE_URL: postgres://postgres:postgres@localhost/postgres
 
     steps:
-      - name: Checkout code
+      # 1. Checkout the repository
+      - name: Checkout repository
         uses: actions/checkout@v3
 
+      # 2. Cache Rust toolchain
+      - name: Cache Rust toolchain
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.rustup
+            ~/.cargo/bin
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-rust-${{ hashFiles('**/rust-toolchain.toml', '**/Cargo.lock') }}
+
+      # 3. Cache Cargo Registry
+      - name: Cache Cargo Registry
+        uses: actions/cache@v3
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+
+      # 4. Cache Cargo Build
+      - name: Cache Cargo Build
+        uses: actions/cache@v3
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
+
+      # 5. Set up Rust toolchain
       - name: Set up Rust
         uses: actions-rs/toolchain@v1
         with:
           toolchain: nightly
-          profile: minimal
           override: true
+          components: rustfmt, clippy
 
-      - name: Install zig
-        run: sudo snap install zig --classic --beta
+      # 6. Install SQLx CLI
+      - name: Install SQLx CLI
+        run: |
+          if ! command -v sqlx &> /dev/null; then
+            cargo install sqlx-cli --no-default-features --features native-tls,postgres
+          else
+            echo "SQLx CLI is already installed"
+          fi
 
-      - name: Install cargo-zigbuild
-        run: cargo install cargo-zigbuild
+      # 7. Wait for PostgreSQL to be ready
+      - name: Wait for PostgreSQL
+        run: |
+          for i in {1..10}; do
+            sqlx database create && break
+            echo "Waiting for PostgreSQL to be ready..."
+            sleep 5
+          done
 
+      # 8. Run SQLx Migrations
+      - name: Run SQLx Migrations
+        run: sqlx migrate run
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+
+      # 9. Build the Application
       - name: Build the application with deploy.sh
-        run: bash deploy.sh
+        run: |
+          chmod +x deploy.sh
+          ./deploy.sh
 
-      # ... rest of your steps ...
-      - name: copy the tarball to the remote server
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.VM_HOST }}
-          username: ${{ secrets.VM_USER }}
-          key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
-          source: ${{ secrets.PKG }}.tar.gz
-          target: ${{ secrets.DEPLOY_DIR }}
+      # 10. Add SSH Private Key to Runner
+      - name: Add SSH Private Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
 
-          # extract and run the app on the VM
-      - name: extract and run the app on the VM
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.VM_HOST }}
-          username: ${{ secrets.VM_USER }}
-          key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
-          script: |
-            cd ${{ secrets.DEPLOY_DIR }}
-            rm -rf migrations
-            rm -rf templates
-            rm -rf static
-            rm -rf Rocket.toml
-            rm ${{ secrets.PKG }}
-            tar -xzvf ${{ secrets.PKG }}.tar.gz
-            rm ${{ secrets.PKG }}.tar.gz
+      # 11. Replace Files on the Remote Server
+      - name: Replace files on the remote server
+        run: |
+          rsync -e "ssh -o StrictHostKeyChecking=no" -az --stats --human-readable --delete --progress ./${{ secrets.PKG }}.tar.gz ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }}:${{ secrets.DEPLOY_DIR }}
+
+      # 12. Extract and Run the App on the VM
+      - name: Extract and run the app on the VM
+        run: |
+          ssh ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} "
+            cd ${{ secrets.DEPLOY_DIR }} &&
+            rm -rf migrations templates static ${{ secrets.PKG }} &&
+            tar -xzvf ${{ secrets.PKG }}.tar.gz &&
+            rm ${{ secrets.PKG }}.tar.gz &&
+            sudo systemctl restart nginx &&
             sudo systemctl restart ${{ secrets.SERVICE_NAME }}.service
+          "

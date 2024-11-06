@@ -2,18 +2,55 @@
 {% block title %}Sign Up{% endblock %}
 {% block body %}
   <h2>Sign Up</h2>
-  {% if error %}<div class="error"><strong>Error:</strong> {{ error }}</div>{% endif %}
-  <form action="/api/register" method="POST">
+  <div id="error-message" class="error" style="display: none;"></div>
+  <form id="register-form">
     <dl>
       <dt>Username:</dt>
-      <dd><input type="text" name="username" size="30" value="{{ username | default(value='') }}"></dd>
+      <dd><input type="text" id="username" name="username" size="30" required></dd>
       <dt>E-Mail:</dt>
-      <dd><input type="text" name="email" size="30" value="{{ email | default(value='') }}"></dd>
+      <dd><input type="email" id="email" name="email" size="30" required></dd>
       <dt>Password:</dt>
-      <dd><input type="password" name="password" size="30"></dd>
+      <dd><input type="password" id="password" name="password" size="30" required></dd>
       <dt>Password <small>(repeat)</small>:</dt>
-      <dd><input type="password" name="password2" size="30"></dd>
+      <dd><input type="password" id="password2" name="password2" size="30" required></dd>
     </dl>
     <div class="actions"><input type="submit" value="Sign Up"></div>
   </form>
+
+  <script>
+    document.getElementById('register-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const formData = {
+        username: document.getElementById('username').value,
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value,
+        password2: document.getElementById('password2').value
+      };
+
+      fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          window.location.href = '/?success_message=' + encodeURIComponent('Registration successful');
+        } else {
+          const errorDiv = document.getElementById('error-message');
+          errorDiv.textContent = data.message;
+          errorDiv.style.display = 'block';
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        const errorDiv = document.getElementById('error-message');
+        errorDiv.textContent = 'An unexpected error occurred. Please try again.';
+        errorDiv.style.display = 'block';
+      });
+    });
+  </script>
 {% endblock %}

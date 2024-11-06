@@ -2,21 +2,19 @@
 extern crate rocket;
 
 pub mod db;
-pub mod fairings;
 pub mod models;
 pub mod routes;
 pub mod security;
 
 use db::pool::get_pool;
 use dotenvy::dotenv;
-use fairings::connection_checker::DbConnectionChecker;
 use rocket::fs::FileServer;
 use rocket_dyn_templates::Template;
 use std::env;
 
 #[launch]
 async fn rocket() -> _ {
-    // Load environment variables from .env file (optional)
+    // Load environment variables from .env file
     dotenv().ok();
 
     // Create the database pool
@@ -25,7 +23,6 @@ async fn rocket() -> _ {
     // Build and return the Rocket instance
     rocket::build()
         .attach(Template::fairing())
-        .attach(DbConnectionChecker)
         .manage(pool)
         .mount(
             "/static",
@@ -38,18 +35,18 @@ async fn rocket() -> _ {
                 routes::pages::about,
                 routes::pages::login,
                 routes::pages::register,
-                routes::pages::search,
                 routes::pages::weather,
+                routes::api::login::logout,
             ],
         )
         .mount(
             "/api",
             routes![
                 routes::api::login::login,
-                routes::api::login::logout,
                 routes::api::register::register,
                 routes::api::weather::fetch_weather_data,
                 routes::api::search::search,
+                routes::api::delete_user::delete_user,
             ],
         )
 }
