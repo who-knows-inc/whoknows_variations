@@ -94,6 +94,7 @@ jobs:
             rm -rf migrations templates static ${{ secrets.PKG }} &&
             tar -xzvf ${{ secrets.PKG }}.tar.gz &&
             rm ${{ secrets.PKG }}.tar.gz
+          " &&
           ssh ${{ secrets.APP_USER }}@${{ secrets.VM_HOST }} "
             sudo systemctl restart ${{ secrets.SERVICE_NAME_STAGING }}.service
           "
