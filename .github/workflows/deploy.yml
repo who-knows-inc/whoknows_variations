@@ -84,15 +84,16 @@ jobs:
 
       - name: Replace files on the remote server
         run: |
-          rsync -e "ssh -o StrictHostKeyChecking=no" -az --stats --human-readable --delete --progress ./${{ secrets.PKG }}.tar.gz ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }}:${{ secrets.DEPLOY_DIR }}
+          rsync -e "ssh -o StrictHostKeyChecking=no" -az --stats --human-readable --delete --progress ./${{ secrets.PKG }}.tar.gz ${{ secrets.DEPLOY_USER }}@${{ secrets.VM_HOST }}:${{ secrets.DEPLOY_DIR }}
 
       - name: Extract and run the app on the VM
         run: |
-          ssh ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }} "
+          ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.VM_HOST }} "
             cd ${{ secrets.DEPLOY_DIR }} &&
             rm -rf migrations templates static ${{ secrets.PKG }} &&
             tar -xzvf ${{ secrets.PKG }}.tar.gz &&
-            rm ${{ secrets.PKG }}.tar.gz &&
-            sudo systemctl restart nginx &&
+            rm ${{ secrets.PKG }}.tar.gz
+            " &&
+          ssh ${{ secrets.APP_USER }}@${{ secrets.VM_HOST }} "
             sudo systemctl restart ${{ secrets.SERVICE_NAME }}.service
           "
