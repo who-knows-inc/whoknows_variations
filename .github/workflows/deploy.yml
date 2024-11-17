@@ -97,3 +97,15 @@ jobs:
           ssh ${{ secrets.APP_USER }}@${{ secrets.VM_HOST }} "
             sudo systemctl restart ${{ secrets.SERVICE_NAME }}.service
           "
+      # Run Postman tests
+      - name: Install Postman CLI
+        run: |
+          curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+
+      - name: Login to Postman CLI
+        run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
+
+      - name: Run API tests
+        id: postman_tests
+        run: |
+          postman collection run "34785392-28b89bc8-68e2-413b-886c-b87b3c6ce4eb" -e "34785392-e66c45ff-79c3-4d8a-ae96-a51425d88ab3"

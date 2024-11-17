@@ -2,7 +2,7 @@
 {% block title %}Home{% endblock %}
 
 {% block body %} 
-    <h1>Who Knows? No one knows. Do you know?</h1>
+    <h1>Who Knows Search</h1>
     <p>This is the homepage. Search for anything you want to know.</p>
 
     <div id="error-message" class="error" style="display: none;">
