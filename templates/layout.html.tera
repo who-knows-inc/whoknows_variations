@@ -49,9 +49,7 @@
 <body>
     <div class="page">
         <div class="navigation">
-            <nav>
-                <h1><a id="nav-logo" href="/">¿Who Knows? noone knows</a></h1>
-                <a href="/weather" class="btn">Go to Weather Page</a>
+            <nav id="mainNav">
                 {% if user %}
                 <a id="nav-logout" href="/logout">Log out [{{ user.username }}]</a>
                 {% else %}
@@ -89,6 +87,25 @@
                 // Remove the success_message from the URL without reloading the page
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
+        }
+
+        const nav = document.getElementById('mainNav');
+        const currentPath = window.location.pathname;
+        
+        // Show appropriate navigation buttons based on current path
+        if (currentPath !== '/weather') {
+            const weatherBtn = document.createElement('a');
+            weatherBtn.href = '/weather';
+            weatherBtn.className = 'btn';
+            weatherBtn.textContent = 'Go to Weather Page';
+            nav.insertBefore(weatherBtn, nav.firstChild);
+        }
+
+        // Insert logo if not on home page
+        if (currentPath !== '/') {
+        const logo = document.createElement('h1');
+        logo.innerHTML = '<a id="nav-logo" href="/">¿Who Knows Search?</a>';
+        nav.insertBefore(logo, nav.firstChild);
         }
     </script>
 </body>
