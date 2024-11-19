@@ -1,7 +1,6 @@
-// src/models/user.rs
-
 use serde::Serialize;
 use sqlx::FromRow;
+use time::PrimitiveDateTime;
 
 #[derive(Serialize, FromRow)]
 pub struct User {
@@ -9,4 +8,5 @@ pub struct User {
     pub username: String,
     pub email: String,
     pub password: String,
+    pub created_at: PrimitiveDateTime,
 }
