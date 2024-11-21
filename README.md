@@ -2,6 +2,8 @@
 
 _This repository is for educational purposes and is not meant for production use. It intentionally contains several security vulnerabilities and problematic parts to facilitate learning._
 
+## Live demo: https://whoknowssearch.com/
+
 ## Getting Started
 
 This project is structured into various branches, each providing a tutorial on a different topic using the same base Rocket application as the `main` branch. Follow the instructions below to set up your development environment and start working with the repository.
@@ -22,16 +24,16 @@ The preffered way to install Rust is using `rustup`.
 
 ```bash
     https :
-    git clone https://github.com/MadeInChina-DevOps/whoknows_nooneknows.git
+    git clone https://github.com/MadeInChina-DevOps/whoknowssearch.git
 
     ssh :
-    git clone git@github.com:MadeInChina-DevOps/whoknows_nooneknows.git
+    git clone git@github.com:MadeInChina-DevOps/whoknowssearch.git
 ```
 
 #### Step 2: run the application
 
 ```bash
-    cd whoknows_nooneknows
+    cd whoknowssearch
     cargo run
 ```
 
@@ -42,7 +44,7 @@ Open your browser and navigate to `http://localhost:8000`
 ### Running the tests
 
 ```bash
-    cd whoknows_nooneknows
+    cd whoknowssearch
     cargo test
 ```
 
