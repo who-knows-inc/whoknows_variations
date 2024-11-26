@@ -2,12 +2,17 @@ use rocket::serde::json::Json;
 use rocket::State;
 use serde::Serialize;
 use sqlx::PgPool;
+use rocket::get;
+use rocket::serde::Deserialize;
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct SearchResult {
     pub title: String,
     pub url: String,
 }
+
+
+
 
 #[get("/search?<q>&<language>")]
 pub async fn search(
