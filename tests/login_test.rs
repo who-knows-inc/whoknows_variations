@@ -1,65 +1,165 @@
-use rocket::{http::{ContentType, Status}, local::asynchronous::Client};
-use serde_json::json;
-use sqlx::{sqlite::SqlitePoolOptions, Pool, Sqlite};
+#[cfg(test)]
+mod tests {
+  
+    use rocket::{local::asynchronous::Client, http::Status, routes};
+    use rocket::serde::json::json;
+    use sqlx::{Executor, PgPool};
+    use tokio; // Tilføjet for #[tokio::test]
+   // use whoknows_nooneknows::routes::api::login::LoginResponse;
+//use crate::routes::api::login::login;
 use whoknows_nooneknows::routes::api::login::{login, LoginResponse};
 
-/// Returnerer en mock SQLite-databaseforbindelse
-async fn setup_mock_db() -> Pool<Sqlite> {
-    let pool = SqlitePoolOptions::new()
-        .max_connections(1)
-        .connect("sqlite::memory:")
+async fn setup_test_db() -> PgPool {
+    let db_url = "postgres://postgres:postgres@localhost:5432/postgres"; // Replace with your actual database URL
+    let pool = PgPool::connect(db_url)
         .await
-        .expect("Failed to connect to SQLite");
+        .expect("Failed to connect to the database");
 
-    // Opret tabel til testen
-    sqlx::query(
+    // Clear the table before inserting test data
+    pool.execute(
         r#"
-        CREATE TABLE users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT NOT NULL,
-            password TEXT NOT NULL
+        TRUNCATE TABLE users RESTART IDENTITY CASCADE;
+        CREATE TABLE IF NOT EXISTS users (
+            id SERIAL PRIMARY KEY,
+            username TEXT NOT NULL UNIQUE,
+            email TEXT NOT NULL,
+            password TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT NOW()
         );
-
-        INSERT INTO users (username, password)
-        VALUES
-            ('test_user', 'correct_password'),
-            ('another_user', 'hashed_password');
+        INSERT INTO users (username, email, password)
+        VALUES ('testuser', 'testuser@example.com', '$2b$12$ePxb7o6.4Emczjb1oRHDguXtzFQXBsq.QEEdv0IxOjNHEqC.pQF.O');
         "#,
     )
-    .execute(&pool)
     .await
-    .expect("Failed to set up mock database");
+    .expect("Failed to set up test database");
 
     pool
 }
+#[tokio::test]
+async fn test_login_success() {
+    let pool = setup_test_db().await;
 
-async fn setup_rocket_with_mock_db(mock_db: Pool<Sqlite>) -> rocket::Rocket<rocket::Build> {
-    rocket::build()
-        .manage(mock_db) // Tilføj mock database som en delt tilstand
-        .mount("/", rocket::routes![login]) // Mount login-endpoint
-}
+    let rocket = rocket::build()
+        .manage(pool.clone())
+        .mount("/", routes![login]);
 
-#[rocket::async_test]
-async fn test_successful_login() {
-    let mock_db = setup_mock_db().await; // Opret mock database
-    let rocket = setup_rocket_with_mock_db(mock_db).await; // Start Rocket med mock database
     let client = Client::tracked(rocket).await.expect("valid rocket instance");
-
-    let login_request = json!({
-        "username": "test_user",
-        "password": "correct_password"
-    });
 
     let response = client
         .post("/login")
-        .header(ContentType::JSON)
-        .body(login_request.to_string())
+        .header(rocket::http::ContentType::JSON)
+        .body(
+            json!({
+                "username": "testuser",
+                "password": "password123" // Matches the bcrypt hash
+            })
+            .to_string(),
+        )
         .dispatch()
         .await;
 
+    // Assert correct status
     assert_eq!(response.status(), Status::Ok);
 
+    // Assert response body
     let body: LoginResponse = response.into_json().await.unwrap();
     assert!(body.success);
     assert_eq!(body.message, "Login successful");
+}
+
+
+
+
+    #[tokio::test]
+    async fn test_login_failure_invalid_password() {
+        let pool = setup_test_db().await;
+
+        let rocket = rocket::build()
+            .manage(pool.clone())
+            .mount("/", routes![login]);
+
+        let client = Client::tracked(rocket).await.expect("valid rocket instance");
+
+        let response = client
+            .post("/login")
+            .header(rocket::http::ContentType::JSON)
+            .body(
+                json!({
+                    "username": "testuser",
+                    "password": "wrongpassword"
+                })
+                .to_string(),
+            )
+            .dispatch()
+            .await;
+
+        assert_eq!(response.status(), Status::Ok);
+
+        let body = response.into_json::<LoginResponse>().await.unwrap();
+        assert!(!body.success);
+        assert_eq!(body.message, "Invalid username or password");
+    }
+
+    #[tokio::test]
+    async fn test_login_failure_user_not_found() {
+        let pool = setup_test_db().await;
+
+        let rocket = rocket::build()
+            .manage(pool.clone())
+            .mount("/", routes![login]);
+
+        let client = Client::tracked(rocket).await.expect("valid rocket instance");
+
+        let response = client
+            .post("/login")
+            .header(rocket::http::ContentType::JSON)
+            .body(
+                json!({
+                    "username": "nonexistentuser",
+                    "password": "password123"
+                })
+                .to_string(),
+            )
+            .dispatch()
+            .await;
+
+        assert_eq!(response.status(), Status::Ok);
+
+        let body = response.into_json::<LoginResponse>().await.unwrap();
+        assert!(!body.success);
+        assert_eq!(body.message, "Invalid username or password");
+    }
+
+#[tokio::test]
+async fn test_login_failure_missing_fields() {
+    let pool = setup_test_db().await;
+
+    let rocket = rocket::build()
+        .manage(pool.clone())
+        .mount("/", routes![login]);
+
+    let client = Client::tracked(rocket).await.expect("valid rocket instance");
+
+    let response = client
+        .post("/login")
+        .header(rocket::http::ContentType::JSON)
+        .body(
+            json!({
+                "username": "testuser"
+                // Missing "password" field
+            })
+            .to_string(),
+        )
+        .dispatch()
+        .await;
+
+    // Assert correct status
+    assert_eq!(response.status(), Status::UnprocessableEntity);
+
+    // No body expected for 422, so don't assert on it
+    let body = response.into_string().await;
+    assert!(body.is_none() || body.unwrap().is_empty());
+}
+
+
 }

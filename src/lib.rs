@@ -4,7 +4,10 @@ extern crate rocket;
 pub mod routes {
     pub mod api {
         pub mod login; // Eksponer login-modulet
+        pub mod weather;
+        pub mod search;
     }
+
 }
 
 pub mod models {

@@ -12,9 +12,11 @@ bcrypt = "0.15.0"
 dotenvy = "0.15"
 rocket_dyn_templates = { version = "0.1.0-rc.1", features = ["tera"] }
 time = { version = "*", features = ["serde"] }
+tokio = { version = "1", features = ["full"] }
 
-# Include "migrate" in the list of features for sqlx
-sqlx = { version = "0.6.3", default-features = false, features = ["runtime-tokio-rustls", "postgres", "macros", "offline", "migrate", "time"] }
+
+# Include "sqlite" in the list of features for sqlx
+sqlx = { version = "0.6.3", default-features = false, features = ["runtime-tokio-rustls", "postgres", "sqlite", "macros", "offline", "migrate", "time"] }
 
 # Disable default features for reqwest and enable rustls
 reqwest = { version = "0.11", default-features = false, features = ["json", "rustls-tls"] }

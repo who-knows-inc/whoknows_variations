@@ -5,14 +5,11 @@ use sqlx::PgPool;
 use rocket::get;
 use rocket::serde::Deserialize;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct SearchResult {
     pub title: String,
     pub url: String,
 }
-
-
-
 
 #[get("/search?<q>&<language>")]
 pub async fn search(
