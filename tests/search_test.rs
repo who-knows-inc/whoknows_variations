@@ -1,9 +1,7 @@
 #[cfg(test)]
 mod tests {
- 
     use rocket::{local::asynchronous::Client, routes};
     use sqlx::{PgPool, Executor};
-    use tokio;
     use rocket::http::Status;
     use whoknows_nooneknows::routes::api::search::{search, SearchResult};
 
@@ -23,10 +21,11 @@ mod tests {
                 language TEXT NOT NULL CHECK (language IN ('en', 'fr')),
                 content TEXT
             );
+            TRUNCATE TABLE pages;
             INSERT INTO pages (title, url, language, content)
             VALUES
-            ('Learn Rust', 'https://rust-lang.org/en', 'en', 'Rust is a programming language.'),
-            ('Programme en Rust', 'https://rust-lang.org/fr', 'fr', 'Rust est un langage de programmation.');
+            ('Rust Documentation', 'https://doc.rust-lang.org/', 'en', 'Rust is a programming language used for systems programming.'),
+            ('Rust Langue Française', 'https://doc.rust-lang.org/fr', 'fr', 'Rust est un langage de programmation.');
             "#
         )
         .await
@@ -35,14 +34,12 @@ mod tests {
         pool
     }
 
-    #[tokio::test]
+    #[rocket::async_test]
     async fn test_search_with_results() {
         let pool = setup_test_db().await;
 
         let rocket = rocket::build()
-            .attach(rocket::fairing::AdHoc::on_ignite("Database Migrations", |rocket| async {
-                rocket.manage(pool)
-            }))
+            .manage(pool.clone())
             .mount("/", routes![search]);
 
         let client = Client::tracked(rocket).await.unwrap();
@@ -56,16 +53,15 @@ mod tests {
 
         let body = response.into_json::<Vec<SearchResult>>().await.unwrap();
         assert!(!body.is_empty(), "Expected results, but got an empty response.");
+        assert_eq!(body[0].title, "Rust Documentation");
     }
 
-    #[tokio::test]
+    #[rocket::async_test]
     async fn test_search_no_results() {
         let pool = setup_test_db().await;
 
         let rocket = rocket::build()
-            .attach(rocket::fairing::AdHoc::on_ignite("Database Migrations", |rocket| async {
-                rocket.manage(pool)
-            }))
+            .manage(pool.clone())
             .mount("/", routes![search]);
 
         let client = Client::tracked(rocket).await.unwrap();
@@ -81,14 +77,12 @@ mod tests {
         assert!(body.is_empty(), "Expected no results, but got some.");
     }
 
-    #[tokio::test]
+    #[rocket::async_test]
     async fn test_search_with_no_query() {
         let pool = setup_test_db().await;
 
         let rocket = rocket::build()
-            .attach(rocket::fairing::AdHoc::on_ignite("Database Migrations", |rocket| async {
-                rocket.manage(pool)
-            }))
+            .manage(pool.clone())
             .mount("/", routes![search]);
 
         let client = Client::tracked(rocket).await.unwrap();
@@ -101,14 +95,12 @@ mod tests {
         assert_eq!(response.status(), Status::BadRequest);
     }
 
-    #[tokio::test]
+    #[rocket::async_test]
     async fn test_search_with_different_language() {
         let pool = setup_test_db().await;
 
         let rocket = rocket::build()
-            .attach(rocket::fairing::AdHoc::on_ignite("Database Migrations", |rocket| async {
-                rocket.manage(pool)
-            }))
+            .manage(pool.clone())
             .mount("/", routes![search]);
 
         let client = Client::tracked(rocket).await.unwrap();
@@ -122,5 +114,6 @@ mod tests {
 
         let body = response.into_json::<Vec<SearchResult>>().await.unwrap();
         assert!(!body.is_empty(), "Expected results for 'language=fr', but got an empty response.");
+        assert_eq!(body[0].title, "Rust Langue Française");
     }
 }

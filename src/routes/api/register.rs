@@ -2,8 +2,10 @@ use crate::security::security::hash_password;
 use rocket::serde::{json::Json, Deserialize, Serialize};
 use rocket::State;
 use sqlx::PgPool;
+use rocket::post;
 
-#[derive(Serialize)]
+
+#[derive(Serialize, Deserialize)]
 pub struct RegisterResponse {
     pub success: bool,
     pub message: String,
@@ -27,84 +29,102 @@ pub async fn register(
         "Attempting registration for user: {}, with email: {}",
         register_request.username, register_request.email
     );
+
     // Check if the passwords match
     if register_request.password != register_request.password2 {
-        println!("ERROR: Passwords do not match");
         return Json(RegisterResponse {
             success: false,
             message: "Passwords do not match".to_string(),
         });
     }
 
-    // Acquire a connection from the pool
-    let mut conn = match pool.acquire().await {
-        Ok(conn) => conn,
+    // Validate inputs
+    if register_request.username.trim().is_empty() || register_request.password.trim().is_empty() {
+        return Json(RegisterResponse {
+            success: false,
+            message: "Username and password cannot be empty".to_string(),
+        });
+    }
+    if !register_request.email.contains('@') {
+        return Json(RegisterResponse {
+            success: false,
+            message: "Invalid email format".to_string(),
+        });
+    }
+
+    // Start transaction
+    let mut transaction = match pool.begin().await {
+        Ok(tx) => tx,
         Err(e) => {
-            eprintln!("Failed to acquire connection: {:?}", e);
+            eprintln!("Failed to start transaction: {:?}", e);
             return Json(RegisterResponse {
                 success: false,
-                message: "ERROR: Database connection error".to_string(),
+                message: "Database transaction error".to_string(),
             });
         }
     };
 
-    // Query the database for the user
-    let user_exists = sqlx::query!(
+    // Check if user exists
+    match sqlx::query!(
         "SELECT username, email FROM users WHERE username = $1 OR email = $2",
         register_request.username,
         register_request.email
     )
-    .fetch_optional(&mut conn)
-    .await;
-
-    match user_exists {
+    .fetch_optional(&mut transaction)
+    .await
+    {
         Ok(Some(user)) => {
             if user.username == register_request.username {
-                println!("ERROR: Username already taken");
                 return Json(RegisterResponse {
                     success: false,
                     message: "Username already taken".to_string(),
                 });
-            } else if user.email == register_request.email {
-                println!("ERROR: Email already taken");
+            }
+            if user.email == register_request.email {
                 return Json(RegisterResponse {
                     success: false,
                     message: "Email already taken".to_string(),
                 });
             }
         }
-        Ok(None) => {}
-        Err(_) => {
-            println!("ERROR: Database error occurred");
+        Ok(None) => {} // No conflicts, continue
+        Err(e) => {
+            eprintln!("Database error: {:?}", e);
             return Json(RegisterResponse {
                 success: false,
-                message: "Database error occurred".to_string(),
+                message: "Database query error".to_string(),
             });
         }
     }
 
-    // Hash the password and insert it into the database
+    // Hash the password and insert it
     let hashed_password = hash_password(&register_request.password);
+    println!(
+        "Attempting to insert: username = {}, email = {}, password hash = {}",
+        register_request.username, register_request.email, hashed_password
+    );
 
-    // Insert the user into the database
     match sqlx::query!(
         "INSERT INTO users (username, email, password) VALUES ($1, $2, $3)",
         register_request.username,
         register_request.email,
         hashed_password
     )
-    .execute(&mut conn)
+    .execute(&mut transaction)
     .await
     {
-        Ok(_) => {
-            println!("Registration successful");
+        Ok(result) => {
+            println!("Insert successful, rows affected: {}", result.rows_affected());
+            transaction.commit().await.unwrap_or_else(|e| {
+                eprintln!("Failed to commit transaction: {:?}", e);
+            });
             Json(RegisterResponse {
                 success: true,
                 message: "Registration successful".to_string(),
             })
         }
-        Err(_) => {
-            println!("ERROR: Failed to create user");
+        Err(e) => {
+            eprintln!("ERROR: Failed to create user: {:?}", e);
             Json(RegisterResponse {
                 success: false,
                 message: "Failed to create user".to_string(),

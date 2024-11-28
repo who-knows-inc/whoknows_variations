@@ -1,18 +1,18 @@
 use rocket::http::{Cookie, CookieJar};
 use rocket::serde::{json::Json, Deserialize, Serialize};
 use rocket::State;
+use rocket::post;
 use sqlx::{Error as SqlxError, PgPool};
-
 use crate::models::user::User;
 use crate::security::security::verify_password;
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct DeleteUserResponse {
     pub success: bool,
     pub message: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct DeleteUserRequest {
     pub email: String,
     pub password: String,
