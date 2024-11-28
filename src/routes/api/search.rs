@@ -1,9 +1,12 @@
 use rocket::serde::json::Json;
-use rocket::State;
-use serde::Serialize;
+use rocket::http::Status;
+use rocket::response::status::Custom;
+use serde::{Serialize, Deserialize};
 use sqlx::PgPool;
+use rocket::State;
+use rocket::get;
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct SearchResult {
     pub title: String,
     pub url: String,
@@ -14,23 +17,23 @@ pub async fn search(
     language: Option<String>,
     q: Option<String>,
     pool: &State<PgPool>,
-) -> Json<Vec<SearchResult>> {
+) -> Result<Json<Vec<SearchResult>>, Custom<Json<&'static str>>> {
     let language = language.unwrap_or_else(|| "en".to_string());
     let query_string = match &q {
         Some(q) if !q.is_empty() => format!("%{}%", q.to_lowercase()),
-        _ => return Json(vec![]),
+        _ => return Err(Custom(Status::BadRequest, Json("Query parameter 'q' is required"))),
     };
 
     let mut conn = match pool.acquire().await {
         Ok(conn) => conn,
         Err(e) => {
             eprintln!("Failed to acquire connection: {:?}", e);
-            return Json(vec![]);
+            return Err(Custom(Status::InternalServerError, Json("Failed to acquire connection")));
         }
     };
     let search_results = sqlx::query_as!(
         SearchResult,
-        "SELECT title, url FROM pages WHERE language = $1 AND content LIKE $2",
+        "SELECT title, url FROM pages WHERE language = $1 AND (title ILIKE $2 OR content ILIKE $2)",
         language,
         query_string
     )
@@ -42,5 +45,5 @@ pub async fn search(
     });
 
     // Return the search results as JSON
-    Json(search_results)
+    Ok(Json(search_results))
 }

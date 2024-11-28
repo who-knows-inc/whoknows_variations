@@ -3,11 +3,13 @@ use rocket::response::Redirect;
 use rocket::serde::{json::Json, Deserialize, Serialize};
 use rocket::State;
 use sqlx::{Error as SqlxError, PgPool};
-
+use rocket::get;
+use rocket::FromForm;
 use crate::models::user::User;
 use crate::security::security::verify_password;
+use rocket::post;
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct LoginResponse {
     pub success: bool,
     pub message: String,

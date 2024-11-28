@@ -1,6 +1,7 @@
 use reqwest::Client; // using reqwest crate to make HTTP requests
 use rocket::serde::json::Json;
 use serde::{Deserialize, Serialize}; // using serde to serialize and deserialize JSON
+use rocket::get;
 
 // Define the structure of the JSON response from the weather API
 #[derive(Deserialize, Serialize)] // derive the Deserialize and Serialize traits
