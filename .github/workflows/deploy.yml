@@ -74,7 +74,7 @@ jobs:
         run: |
           chmod +x deploy.sh
           ./deploy.sh
-
+      # Run unit tests
       - name: Run Unit and Integration Tests
         run: cargo test --release
 
