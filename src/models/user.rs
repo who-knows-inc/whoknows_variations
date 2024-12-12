@@ -2,6 +2,7 @@ use serde::Serialize;
 use sqlx::FromRow;
 //use time::PrimitiveDateTime;
 
+
 #[derive(Serialize, FromRow)]
 pub struct User {
     pub id: i32,

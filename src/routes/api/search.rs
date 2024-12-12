@@ -6,6 +6,9 @@ use sqlx::PgPool;
 use rocket::State;
 use rocket::get;
 
+
+
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SearchResult {
     pub title: String,

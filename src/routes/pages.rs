@@ -1,6 +1,7 @@
 use rocket::{http::CookieJar, State};
 use rocket_dyn_templates::{context, Template};
 use sqlx::PgPool;
+use rocket::get;
 
 use crate::db::get_current_user::get_current_user;
 use crate::routes::api::weather::fetch_weather_data;

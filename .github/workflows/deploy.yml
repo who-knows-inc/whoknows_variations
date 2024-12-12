@@ -75,6 +75,9 @@ jobs:
           chmod +x deploy.sh
           ./deploy.sh
 
+      - name: Run Unit and Integration Tests
+        run: cargo test --release
+
       - name: Add SSH Private Key
         run: |
           mkdir -p ~/.ssh

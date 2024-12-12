@@ -2,7 +2,7 @@ use crate::security::security::hash_password;
 use rocket::serde::{json::Json, Deserialize, Serialize};
 use rocket::State;
 use sqlx::PgPool;
-use rocket::post;
+ use rocket::post;
 
 
 #[derive(Serialize, Deserialize)]
