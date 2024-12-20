@@ -12,6 +12,20 @@ This example has the required set up to deploy docker images to Github Packages.
 
 In the case of this tutorial, the images have been made public so that anyone can pull them and try out the tutorial on their own servers.
 
+---
+
+## Tutorials
+
+1. [Ways to achieve Continuous Deployment](./tutorials/01._Ways_to_Achieve_Continuous_Deployment.md)
+
+2. [Setting up Github Actions](./tutorials/02._Continuous_Delivery.md)
+
+3. [Setting up the Deployment Server](./tutorials/03._The_Continuous_Deployment_Workflow.md)
+
+4. [Environment Variables](./tutorials/04._Environment_Variables.md)
+
+
+---
 
 ### Setting up the deployment server
 
@@ -31,6 +45,7 @@ sudo usermod -aG docker <user>
 
 You can look in [inline_commands.sh](./infrastructure/inline_commands.sh) for inspiration. 
 
+---
 
 ### `setup.sh`
 
@@ -45,12 +60,6 @@ Otherwise, you can also define the secrets manually. The required values are:
 | `SSH_HOST` | The IP address of the server. |
 | `SSH_USER` | The user that has SSH access to the server. |
 | `SSH_PRIVATE_KEY` | The private key of the user that has SSH access to the server. |
-
-
----
-
-
-
 
 
 
