@@ -13,7 +13,7 @@ from flask import Flask, request, session, url_for, redirect, render_template, g
 
 DATABASE_PATH = '../whoknows.db'
 PER_PAGE = 30
-DEBUG = False
+DEBUG = True if os.getenv("FLASK_ENV") == "development" else False
 SECRET_KEY = 'development key'
 
 app = Flask(__name__)
@@ -214,4 +214,5 @@ def verify_password(stored_hash, password):
 if __name__ == '__main__':
     # Run the server
     # debug=True enables automatic reloading and better messaging, only for development
+    print(DEBUG)
     app.run(host="0.0.0.0", port=8080, debug=DEBUG)
