@@ -3,7 +3,7 @@ services:
     image: ghcr.io/who-knows-inc/whoknows_variations_server:latest
     build:
       context: ./backend
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.prod
     ports:
       - "8080:8080"
     networks:
