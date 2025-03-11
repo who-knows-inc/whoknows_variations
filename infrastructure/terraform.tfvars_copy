@@ -1,5 +1,5 @@
 location                     = "North Europe"
-resource_group_name          = "my-resource-group"
+resource_group_name          = "who-knows-rg"
 vm_name                      = "main-vm"
 vm_size                      = "Standard_B1s"
 admin_username               = "adminuser"

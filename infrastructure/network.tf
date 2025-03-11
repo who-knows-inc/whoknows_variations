@@ -17,6 +17,7 @@ resource "azurerm_public_ip" "keacloud" {
   location            = azurerm_resource_group.keacloud.location
   resource_group_name = azurerm_resource_group.keacloud.name
   allocation_method   = var.public_ip_allocation_method
+  sku                 = "Standard"
 }
 
 resource "azurerm_network_interface" "keacloud" {
@@ -50,6 +51,13 @@ resource "azurerm_network_security_group" "keacloud_nsg" {
     destination_address_prefix = "*"
   }
 
+}
+
+resource "azurerm_network_interface_security_group_association" "keacloud" {
+  network_interface_id      = azurerm_network_interface.keacloud.id
+  network_security_group_id = azurerm_network_security_group.keacloud_nsg.id
+
+  depends_on = [azurerm_network_security_group.keacloud_nsg]
 }
 
 resource "azurerm_network_security_rule" "keacloud_ssh_rule" {
