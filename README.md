@@ -17,7 +17,7 @@ Who knows metrics endpoint: http://localhost:8080/metrics
 
 The Prometheus web client: http://localhost:9090/
 
-The Grafana dashboard: http://localhost:3000/ (login with `admin`/`admin`.)
+The Grafana dashboard: http://localhost:3000/ (**login** with `admin`/`admin`.)
 
 If you are following the tutorial with intent to implement it for your group, remember to change the login credentials to what is posted in Teams. 
 
