@@ -47,5 +47,5 @@ jobs:
     - name: Upload OWASP ZAP report
       uses: actions/upload-artifact@v4
       with:
-        name: zap-report
+        name: zap_report
         path: zap.out
