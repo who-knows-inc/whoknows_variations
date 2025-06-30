@@ -43,6 +43,7 @@ jobs:
         target: 'http://localhost:8080'
         cmd_options: '-a' # automatic mode
         allow_issue_writing: false
+        artifact_name: zap_scan
       
     - name: Upload OWASP ZAP report
       uses: actions/upload-artifact@v4
