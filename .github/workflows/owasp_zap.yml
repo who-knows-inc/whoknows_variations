@@ -1,9 +1,6 @@
 name: OWASP ZAP
 
-on:
-  push:
-    branches:
-      - security_testing
+on: [push, pull_request]
 
 permissions:
   contents: read

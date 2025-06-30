@@ -1,9 +1,6 @@
 name: Bandit Security Check
 
-on:
-  push:
-    branches:
-      - security_testing
+on: [push, pull_request]
 
 jobs:
   bandit:
