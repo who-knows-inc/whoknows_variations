@@ -36,18 +36,16 @@ jobs:
       run: |
         curl --retry 5 --retry-connrefused --retry-delay 5 http://localhost:8080
 
-    # - name: ZAP Scan
-    #   uses: zaproxy/action-full-scan@v0.10.0
-    #   with:
-    #     token: ${{ secrets.GITHUB_TOKEN }}
-    #     target: 'http://localhost:8080'
-    #     cmd_options: '-a' # automatic mode
-    #     allow_issue_writing: false
+
     - name: Run ZAP baseline scan
       run: |
         docker run --network="host" -v $(pwd):/zap/wrk/:rw ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
-          -t http://localhost:8080 -a -r zap-report.html -J zap-report.json -x zap-report.xml
-      
+          -t http://localhost:8080 -a -r zap-report.html -J zap-report.json -x zap-report.xml || true   
+      # || true ensures the report is still generated even if ZAP finds issues.
+      # This is for the sake of the guide and should be removed in production.
+                                                                    
+              
+    
     - name: List All Files recursively
       run: |
         find . -type f -print | sort
