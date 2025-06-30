@@ -4,7 +4,7 @@
 {% block body %}
 <div>
   <input id="search-input" placeholder="Search..." value="{{ request.args.get('q', '') }}"/>
-  <button onclick="makeSearchRequest()">Search</button>
+  <button id="search-button" onclick="makeSearchRequest()">Search</button>
 </div>
 
 <div id="results">
@@ -35,9 +35,9 @@
 
   function makeSearchRequest() {
     const query = searchInput.value;
-            const url = new URL(window.location.href);
-            url.searchParams.set('q', query);
-            window.location.href = url.toString();
+    const url = new URL(window.location.href);
+    url.searchParams.set('q', query);
+    window.location.href = url.toString();
   }
 </script>
 {% endblock %}
