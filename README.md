@@ -2,7 +2,13 @@
 
 This tutorial focuses on how to perform various security tests on the WhoKnows project with GitHub Actions.
 
-Note that the point is that Bandit causes the Action to fail because the codebase has major security issues.
+---
+
+[![Bandit Security Check](https://github.com/who-knows-inc/whoknows_variations/actions/workflows/bandit.yml/badge.svg?branch=security_testing)](https://github.com/who-knows-inc/whoknows_variations/actions/workflows/bandit.yml)
+[![OWASP ZAP](https://github.com/who-knows-inc/whoknows_variations/actions/workflows/owasp_zap.yml/badge.svg?branch=security_testing)](https://github.com/who-knows-inc/whoknows_variations/actions/workflows/owasp_zap.yml)
+[![Safety Dependency Check](https://github.com/who-knows-inc/whoknows_variations/actions/workflows/safety.yml/badge.svg?branch=security_testing)](https://github.com/who-knows-inc/whoknows_variations/actions/workflows/safety.yml)
+
+**Note**: The entire point is that Bandit workflow fails becauses the codebase has major security issues.
 
 ---
 
