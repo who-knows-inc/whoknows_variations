@@ -62,21 +62,6 @@ jobs:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
 
-      # - name: Deploy to server
-      #   run: |
-      #     ssh -i ~/.ssh/ssh_key -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << 'EOF'
-      #     docker network create my_network || true
-      #     docker pull ghcr.io/who-knows-inc/whoknows_variations_server:latest
-      #     docker rm -f whoknows_flask || true
-      #     docker run -d --env-file .env --network my_network -p 8080:8080 --name whoknows_flask ghcr.io/who-knows-inc/whoknows_variations_server:latest
-      #     docker pull ghcr.io/who-knows-inc/whoknows_variations_nginx:latest
-      #     docker rm -f whoknows_nginx || true
-      #     docker run -d --network my_network -p 80:80 --name whoknows_nginx ghcr.io/who-knows-inc/whoknows_variations_nginx:latest
-      #     EOF
-      #   env:
-      #     SSH_USER: ${{ secrets.SSH_USER }}
-      #     SSH_HOST: ${{ secrets.SSH_HOST }}
-
       - name: Check Out Repository
         uses: actions/checkout@v2
     

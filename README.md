@@ -4,6 +4,10 @@ This tutorial focuses on how you can achieve Continuous Deployment of Docker ima
 
 Continuous Deployment can be achieved in many different ways, which will be discussed in [Ways to achieve Continuous Deployment](./tutorials/01._Ways_to_Achieve_Continuous_Deployment.md).
 
+[![Continuous Delivery Deployment](https://github.com/who-knows-inc/whoknows_variations/actions/workflows/continuous_delivery_deployment.yaml/badge.svg?branch=continuous_deployment)](https://github.com/who-knows-inc/whoknows_variations/actions/workflows/continuous_delivery_deployment.yaml)
+
+**Note**: The workflow works and has been thoroughly tested even though it appears as having failed. The failure is because there isn't a server set up to deploy to. Every time I want to make changes to the documentation I don't see the point in setting up a new server just to make the workflow pass.
+
 ---
 
 ## Prerequisites
