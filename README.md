@@ -1,5 +1,9 @@
 # Whoknows Variations
 
+[![Docker Build](https://github.com/who-knows-inc/whoknows_variations/actions/workflows/continuous_delivery.yml/badge.svg?branch=continuous_delivery)](https://github.com/who-knows-inc/whoknows_variations/actions/workflows/continuous_delivery.yml)
+
+---
+
 ## Get started
 
 To get started, copy the `.env.sample` file in `src/backend` to `.env` and fill in the values. 
@@ -12,6 +16,8 @@ $ docker-compose -f docker-compose.dev.yml up --build
 
 You can now access the application at `http://localhost:8080`.
 
+---
+
 ## Github Packages
 
 There are many container registries to choose from. This repository uses the Github Packages:
@@ -19,6 +25,8 @@ There are many container registries to choose from. This repository uses the Git
 https://github.com/features/packages
 
 The workflow can be modified to deploy to another container registry such as Docker Hub etc. 
+
+---
 
 ## Tutorials
 
