@@ -39,16 +39,21 @@ jobs:
 
     - name: Run ZAP baseline scan
       run: |
-        docker run --network="host" -v $(pwd):/zap/wrk/:rw ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
-          -t http://localhost:8080 -a -r zap-report.html -J zap-report.json -x zap-report.xml -o /zap/wrk || true   
-      # || true ensures the report is still generated even if ZAP finds issues.
-      # This is for the sake of the guide and should be removed in production.
+        docker run --network="host" -v $(pwd):/zap/wrk/:rw ghcr.io/zaproxy/zaproxy:stable \
+          /bin/bash -c "
+            zap-baseline.py -t http://localhost:8080 -a \
+              -r zap-report.html -J zap-report.json -x zap-report.xml -o /zap/wrk || true
+            echo '=== /zap/wrk contents ==='
+            ls -alh /zap/wrk
+            echo '=== /tmp contents ==='
+            ls -alh /tmp
+          "
                                                                     
               
     
     - name: List All Files recursively
       run: |
-        find . -type f -print | sort
+        find . -type f ! -path '*/.*' | sort
 
     - name: Upload OWASP ZAP report
       uses: actions/upload-artifact@v4
