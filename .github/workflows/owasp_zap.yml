@@ -6,7 +6,7 @@ on:
       - security_testing
 
 permissions:
-  contents: write
+  contents: read
   issues: write
   security-events: write
 
@@ -36,41 +36,19 @@ jobs:
       run: |
         curl --retry 5 --retry-connrefused --retry-delay 5 http://localhost:8080
 
-
-    # - name: Run ZAP scan
-    #   run: |
-    #     sudo chmod -R a+w $(pwd)
-    #     docker run --add-host=host.docker.internal:host-gateway \
-    #       -v $(pwd):/zap/wrk -w /zap/wrk ghcr.io/zaproxy/zaproxy:stable \
-    #       /bin/bash -c "zap-baseline.py -t http://host.docker.internal:8080 -a \
-    #         -r zap-report.html -J zap-report.json -x zap-report.xml || true"
-    
-    # - name: List All Files recursively
-    #   run: |
-    #     find . -type f ! -path '*/.*' | sort
-
-
-
-
-    - name: ZAP Scan
-      uses: zaproxy/action-full-scan@v0.10.0
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        target: 'http://localhost:8080'
-        cmd_options: '-a' # automatic mode
-        allow_issue_writing: false
-      
-
-    - name: List All Files recursively after zap 2
+    - name: Run ZAP scan
       run: |
-        find . -type f ! -path '*/.*' | sort
-
-      
-    # - name: Upload OWASP ZAP report
-    #   uses: actions/upload-artifact@v4
-    #   with:
-    #     name: zap_report
-    #     path: |
-    #       zap-report.html
-    #       zap-report.json
-    #       zap-report.xml
+        sudo chmod -R a+w $(pwd)
+        docker run --add-host=host.docker.internal:host-gateway \
+          -v $(pwd):/zap/wrk -w /zap/wrk ghcr.io/zaproxy/zaproxy:stable \
+          /bin/bash -c "zap-baseline.py -t http://host.docker.internal:8080 -a \
+            -r zap-report.html -J zap-report.json -x zap-report.xml || true"
+       
+    - name: Upload OWASP ZAP report
+      uses: actions/upload-artifact@v4
+      with:
+        name: zap_report
+        path: |
+          zap-report.html
+          zap-report.json
+          zap-report.xml
