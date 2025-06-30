@@ -1,6 +1,13 @@
 name: Safety Dependency Check
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - security_test
+  pull_request:
+    branches:
+      - security_test
+
 
 jobs:
   safety-check:

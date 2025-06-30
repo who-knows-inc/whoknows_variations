@@ -2,6 +2,8 @@
 
 This tutorial focuses on how to perform various security tests on the WhoKnows project with GitHub Actions.
 
+Note that the point is that Bandit causes the Action to fail because the codebase has major security issues.
+
 ---
 
 ## The tutorials
