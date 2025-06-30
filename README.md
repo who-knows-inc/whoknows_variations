@@ -1,5 +1,9 @@
 # Whoknows Variations
 
+[![CI](https://github.com/who-knows-inc/whoknows_variations/actions/workflows/ci.yaml/badge.svg?branch=continuous_integration)](https://github.com/who-knows-inc/whoknows_variations/actions/workflows/ci.yaml)
+
+---
+
 ## Setup
 
 Bumped up the server code in `app.py` to Python version 3. This will allow us to use the latest linting libraries for Python. 
