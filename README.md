@@ -2,6 +2,8 @@
 
 This tutorial focuses on a basic IaC setup for a Virtual Machine and how to lint Terraform files in a Github Action.
 
+[![Infrastructure as Code Linting and Security](https://github.com/who-knows-inc/whoknows_variations/actions/workflows/infrastructure_as_code.yml/badge.svg?branch=infrastructure_as_code)](https://github.com/who-knows-inc/whoknows_variations/actions/workflows/infrastructure_as_code.yml)
+
 ---
 
 ## The tutorial
