@@ -2,6 +2,8 @@
 
 This branch focuses on end-to-end testing the Flask application using Playwright. The tests are located in the `src/test/e2e` directory.
 
+[![Playwright Tests](https://github.com/who-knows-inc/whoknows_variations/actions/workflows/playwright.yml/badge.svg?branch=end-to-end_testing)](https://github.com/who-knows-inc/whoknows_variations/actions/workflows/playwright.yml)
+
 ---
 
 ## Initializing Playwright
