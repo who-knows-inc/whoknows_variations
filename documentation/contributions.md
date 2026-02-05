@@ -72,11 +72,14 @@ The following is extremely important, so follow the numbered list with numbers o
 
 When the PR has been created, a fellow teammate will review it and merge it, if possible.
 
-## Are you the merger?
+Like stated earlier, we like commits! Commit often while working on your branch. However, only open a pull request when your work is complete - we'd rather you add one more commit to your branch than have to reject an incomplete PR.
 
-Make sure to delete the branch when it has been merged, we like a clean house.
+## Merging PRs
 
-Like stated earlier, we like commits! But we dont like reviewing PR's all the time, so make sure you are done before you open a pull request - rather have one more commit than having to reject a pull request.
+Review the code under the commits tab
+
+After merging, delete the feature branch to keep the repository clean.
+
 
 # Questions?
 
