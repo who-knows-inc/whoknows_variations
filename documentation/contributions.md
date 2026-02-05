@@ -76,7 +76,9 @@ Like stated earlier, we like commits! Commit often while working on your branch.
 
 ## Merging PRs
 
-Review the code under the commits tab
+//TODO: Add pictures of how to review and accepts the changes
+
+Review the code under the commits tab.
 
 After merging, delete the feature branch to keep the repository clean.
 
