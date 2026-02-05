@@ -38,13 +38,40 @@ We love commits and we love to commit every time we have added a new:
 
 *Dont mindlessly add commits but also dont hesitate to commit.*
 
+Commits follow the same naming strategy as the branches, but in a slightly different manner.
+
+For example:
+
+```bash
+git commit -m "chore: moved the images into an image folder for documentation."
+```
+
+
 ## Pull Request
 
 It is not possible to push to the main repository, neither will it be possible to review your own pull requests.
 
-When you are done with the issue at hand, go to the repository &rarr; select contribute &rarr; open pull request
+When you are done with the issue at hand, push the changes, go to the repository and select:
 
+1. Compare & pull request
 
-Next, assign the branch you made in the **head** repository.
+![alt text](2026-02-05_20-02.png)
 
-Pretty pretty please, make sure to assign 
+The following is extremely important, so follow the numbered list with numbers on the image closely:
+
+## 1. Make sure the compare is your branch.
+## 2. That the head repository is ripmarkus/whoknows_ripmarkus
+## 3. Base = main
+## 4. Base repository = ripmarkus/whoknows_ripmarkus
+
+![alt text](2026-02-05_20-06.png)
+
+When the PR has been created, a fellow teammate will review it and merge it, if possible.
+
+Like stated earlier, we like commits! But we dont like reviewing PR's all the time, so make sure you are done before you open a pull request - rather have one more commit than having to reject a pull request.
+
+# Questions?
+
+We like making sure everyone is onboard for this strategy, there are no stupid questions, rather ask and learn, than assume and fail.
+
+# THERE ARE NO STUPID QUESTIONS
