@@ -1,12 +1,14 @@
 # How to contribute
 
-There are very strict rules on how to contribute to this codebase, even if you are a from the *ripmarkus* organization.
+There are very strict rules on how to contribute to this codebase, even if you are from the *ripmarkus* organization.
 
 Below we will list how to contribute, how NOT to contribute and why we do it like so.
 
 ## Issue
 
-Find an issue and assign yourself to it, make sure that you flag it as *In progress* in the Kanban Board under the projects tab on github.
+1. Find an issue and assign yourself to it, 
+2. Make sure that you move it to *In progress* in the Kanban Board.
+3. Create your branch.
 
 ## Branching strategy
 
@@ -42,10 +44,12 @@ Commits follow the same naming strategy as the branches, but in a slightly diffe
 
 For example:
 
-```bash
-git commit -m "chore: moved the images into an image folder for documentation."
-```
+- `feat: add GET endpoint for car details`
+- `fix: resolve null pointer in car validation`
+- `chore: reorganize image assets`
+- `docs: update API documentation for cars`
 
+This convention makes it easy to scan commit history and understand what changed at a glance.
 
 ## Pull Request
 
@@ -67,6 +71,10 @@ The following is extremely important, so follow the numbered list with numbers o
 ![alt text](2026-02-05_20-06.png)
 
 When the PR has been created, a fellow teammate will review it and merge it, if possible.
+
+## Are you the merger?
+
+Make sure to delete the branch when it has been merged, we like a clean house.
 
 Like stated earlier, we like commits! But we dont like reviewing PR's all the time, so make sure you are done before you open a pull request - rather have one more commit than having to reject a pull request.
 
