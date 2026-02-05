@@ -15,3 +15,4 @@ When you've added a new feature, please add solid documentation on what you've m
 # Found an issue?
 
 Add it to the issues tab!
+

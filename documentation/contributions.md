@@ -80,6 +80,14 @@ Like stated earlier, we like commits! Commit often while working on your branch.
 
 Review the code under the commits tab.
 
+Select review.
+
+1. Leave a comment
+2. Select Comment, Approve or Request Changes.
+3. Submit Review
+
+![alt text](2026-02-05_20-41.png)
+
 After merging, delete the feature branch to keep the repository clean.
 
 
