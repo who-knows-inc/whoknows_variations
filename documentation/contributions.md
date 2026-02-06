@@ -25,6 +25,7 @@ For example:
 Each of these will state which type of commits the branch will be.
 
 To create a new branch, use the follow command in the cloned repo:
+(type = chore/refactor/feat/fix/documentation)
 
 ```bash
 git checkout -b type/<branch-name>
@@ -59,7 +60,7 @@ When you are done with the issue at hand, push the changes, go to the repository
 
 1. Compare & pull request
 
-![alt text](../imgs/2026-02-05_20-02.png)
+![alt text](/documentation/imgs/2026-02-05_20-02.png)
 
 The following is extremely important, so follow the numbered list with numbers on the image closely:
 
@@ -68,7 +69,7 @@ The following is extremely important, so follow the numbered list with numbers o
 ## 3. Base = main
 ## 4. Base repository = ripmarkus/whoknows_ripmarkus
 
-![alt text](../imgs/2026-02-05_20-06.png)
+![alt text](/documentation/imgs/2026-02-05_20-06.png)
 
 When the PR has been created, a fellow teammate will review it and merge it, if possible.
 
@@ -86,7 +87,7 @@ Select review.
 2. Select Comment, Approve or Request Changes.
 3. Submit Review
 
-![alt text](../imgs/2026-02-05_20-41.png)
+![alt text](/documentation/imgs/2026-02-05_20-41.png)
 
 After merging, delete the feature branch to keep the repository clean.
 
