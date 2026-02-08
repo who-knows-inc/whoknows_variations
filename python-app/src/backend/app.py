@@ -6,12 +6,12 @@ import hashlib
 from datetime import datetime
 from contextlib import closing
 from flask import Flask, request, session, url_for, redirect, render_template, g, flash, jsonify
-
+from pathlib import Path
 ################################################################################
 # Configuration
 ################################################################################
 
-DATABASE_PATH = 'C:/Users/mathias/Desktop/whoknows_ripmarkus/python-app/src/schema.sql'
+DATABASE_PATH = Path(__file__).resolve().parent.parent / "schema.sql"
 PER_PAGE = 30
 DEBUG = False
 SECRET_KEY = 'development key'
@@ -49,7 +49,6 @@ def init_db():
             db.cursor().executescript(f.read().decode('utf-8'))
         db.commit()
         print ("Initialized the database: " + str(DATABASE_PATH))
-
 
 def query_db(query, args=(), one=False):
     """Queries the database and returns a list of dictionaries."""
