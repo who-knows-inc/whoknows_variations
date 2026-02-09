@@ -2,8 +2,6 @@ require 'sinatra'
 require 'sqlite3'
 require 'json'
 
-#Test metode (slet mig senere)
-
 get '/' do
   'Hello world!!!!!!'
 end
@@ -11,6 +9,14 @@ end
 # VIEWS
 get '/about' do
     erb :about
+end
+
+get '/login' do
+    erb :login
+end
+
+get '/register' do
+    erb :register
 end
 
 # DATABASE
