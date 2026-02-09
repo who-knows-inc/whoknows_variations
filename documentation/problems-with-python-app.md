@@ -5,3 +5,6 @@
 
 ## Making the database path work no matter the machine (Relative)
     To ensure the database works regardless of the machine's file system, we implemented relative paths using the `pathlib` module.
+
+
+## API Routes
