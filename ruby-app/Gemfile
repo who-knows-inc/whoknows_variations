@@ -6,6 +6,7 @@ gem 'sqlite3'
 gem 'sinatra'
 gem 'puma'  
 gem 'rackup'
+gem 'json'
 
 group :development do
   gem 'rerun'
