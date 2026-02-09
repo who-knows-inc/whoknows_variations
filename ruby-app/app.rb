@@ -6,15 +6,17 @@ get '/' do
   'Hello world!'
 end
 
-
+// VIEWS
 get '/about' do
     erb :about
 end
 
+// DATABASE
 def get_db
     SQLite3::Database.new 'whoknows.db'
 end
 
+// ENDPOINTS   
 get '/api/users' do
     content_type :json
     db = get_db
