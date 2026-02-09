@@ -2,21 +2,23 @@ require 'sinatra'
 require 'sqlite3'
 require 'json'
 
+#Test metode (slet mig senere)
+
 get '/' do
-  'Hello world!'
+  'Hello world!!!!!!'
 end
 
-// VIEWS
+# VIEWS
 get '/about' do
     erb :about
 end
 
-// DATABASE
+# DATABASE
 def get_db
     SQLite3::Database.new 'whoknows.db'
 end
 
-// ENDPOINTS   
+# ENDPOINTS   
 get '/api/users' do
     content_type :json
     db = get_db
