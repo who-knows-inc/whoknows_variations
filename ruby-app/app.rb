@@ -2,8 +2,25 @@ require 'sinatra'
 require 'sqlite3'
 require 'json'
 
+#Shows the search page
 get '/' do
-  'Hello world!!!!!!'
+
+  # retrieves the query parameter from the url
+  query = params[:q]
+
+  # retrieves the languge parameter (defaults to english)
+  language = params[:language] || 'en'
+
+  # if no query, return no 
+  unless query
+    search_results = []
+  else
+    # retrieve from database
+    search_results = search_pages_query(db, language, query)  
+  end 
+
+  # always renders the search template, with or without a populated result array
+  erb :search, locals: { search_results: search_results, query: query }
 end
 
 # VIEWS
