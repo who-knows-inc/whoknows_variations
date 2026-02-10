@@ -3,7 +3,7 @@ require 'sqlite3'
 require 'json'
 
 get '/' do
-  'Hello world!!!!!!'
+  erb :search
 end
 
 # VIEWS
