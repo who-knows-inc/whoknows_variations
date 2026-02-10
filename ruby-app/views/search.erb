@@ -1,18 +1,38 @@
+<!-- Search input form -->
 <div>
+  <!-- shows current query value -->
   <input id="search-input" placeholder="Search..." value="<%= query %>"/>
+
+  <!-- search button that triggers javascript function makeSearchRequest() --> 
   <button id="search-button" onclick="makeSearchRequest()">Search</button>
+
 </div>
+
+
+<!-- search results container -->
 <div id="results">
+
+  <!-- loop through search results -->
   <% search_results.each do |result| %>
     <div>
+      <-- display search result as a clickable link --> 
       <h2><a class="search-result-title" href="<%= result[:url] %>"><%= result[:title] %></a></h2>
+
+      <!-- display snippet of the description in the result -->
       <p class="search-result-description"><%= result[:description] %></p>
+
     </div>
   <% end %>
 </div>
 <script>
+
+// store the search input variable
 let searchInput;
+
+// only execute when the page has fully loaded
 document.addEventListener('DOMContentLoaded', () => {
+  
+  // get the search input element from id
   searchInput = document.getElementById("search-input");
   // Focus the input field
   searchInput.focus();
@@ -23,6 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+// function to perform the search by updating the url with the query parameters
 function makeSearchRequest() {
   const query = searchInput.value;
   const url = new URL(window.location.href);
