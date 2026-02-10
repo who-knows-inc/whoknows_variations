@@ -39,15 +39,19 @@ begin
     end
   end
 
-  def search_pages_query(db)
-    query = "SELECT * FROM pages WHERE language = 'en' AND content LIKE '%golang%'"
-    pages = []
-    db.execute(query) do |row|
-      id, title, language, content = row
-      pages << Page.new(id, title, language, content)
-    end
-    pages
+  #changed this to accept parameters, so it can be used other places
+  def search_pages_query(db, language, query)
+  # Build the SQL query with dynamic values
+  sql = "SELECT * FROM pages WHERE language = '%s' AND content LIKE '%%%s%%'" % [language, query]
+  pages = []
+  
+  db.execute(sql) do |row|
+    id, title, lang, content = row
+    pages << Page.new(id, title, lang, content)
   end
+  
+  pages
+end 
 
   last_id = insert_user_query(db)
   if last_id
