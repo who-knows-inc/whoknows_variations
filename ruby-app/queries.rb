@@ -42,7 +42,9 @@ begin
   #changed this to accept parameters, so it can be used other places
   def search_pages_query(db, language, query)
   # Build the SQL query with dynamic values
-  sql = "SELECT * FROM pages WHERE language = '%s' AND content LIKE '%%%s%%'" % [language, query]
+  sql = "SELECT * FROM pages 
+         WHERE language = '%s' 
+         AND content LIKE '%%%s%%'" % [language, query]
   pages = []
   
   db.execute(sql) do |row|

@@ -19,6 +19,7 @@ get '/' do
     search_results = search_pages_query(db, language, query)  
   end 
 
+  # always renders the search template, with or without a populated result array
   erb :search, locals: { search_results: search_results, query: query }
 end
 
