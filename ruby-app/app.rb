@@ -70,3 +70,11 @@ post '/api/register' do
       message: "Register endpoint hit"
     }.to_json
 end
+
+get "/api/logout" do
+    content_type :json
+
+    {
+      message: "Logout endpoint hit"
+    }.to_json
+end
