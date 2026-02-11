@@ -54,3 +54,11 @@ get '/api/users' do
   db.close
   users.to_json
 end
+
+post '/api/login' do
+    content_type :json
+
+    {
+      message: "Login endpoint hit"
+    }.to_json
+end
