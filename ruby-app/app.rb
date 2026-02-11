@@ -62,3 +62,11 @@ post '/api/login' do
       message: "Login endpoint hit"
     }.to_json
 end
+
+post '/api/register' do
+    content_type :json
+
+    {
+      message: "Register endpoint hit"
+    }.to_json
+end
