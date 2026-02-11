@@ -55,6 +55,14 @@ get '/api/users' do
   users.to_json
 end
 
+get '/api/search' do
+    content_type :json
+
+    {
+      message: "Search endpoint hit"
+    }.to_json
+end
+
 post '/api/login' do
     content_type :json
 
