@@ -11,7 +11,7 @@ To get started, copy the `.env.sample` file in `src/backend` to `.env` and fill 
 Then run the following command to start the application:
 
 ```bash
-$ docker-compose -f docker-compose.dev.yml up --build
+$ docker compose -f docker-compose.dev.yml up --build
 ```
 
 You can now access the application at `http://localhost:8080`.
