@@ -27,8 +27,8 @@ jobs:
       run: echo ${{ env.CR_PAT }} | docker login ghcr.io -u ${{ env.DOCKER_GITHUB_USERNAME }} --password-stdin
 
     - name: Create .env file
-        run: |
-          touch .env
+      run: |
+        touch .env
 
     - name: Build and Push Docker Images
       working-directory: ./src
