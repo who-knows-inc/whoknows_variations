@@ -1,3 +1,5 @@
+version: "3.9"
+
 services:
   whoknows_flask:
     image: ghcr.io/who-knows-inc/whoknows_variations_server:latest
