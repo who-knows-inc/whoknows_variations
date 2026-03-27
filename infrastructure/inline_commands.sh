@@ -21,7 +21,6 @@ echo "==========================================================================
 sudo apt install -y docker.io
 sudo usermod -aG docker $(whoami)
 sudo systemctl restart docker
-sudo apt install -y docker-compose
 echo "============================================================================================"
 echo "Create a new user for GitHub Actions. Assuming that they will reuse the same SSH key as the admin user."
 echo "It is recommended that you generate a new SSH key for the GitHub Actions user and add it to `~/.ssh/authorized_keys`."
