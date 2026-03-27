@@ -1,9 +1,8 @@
 services:
   whoknows_flask:
     image: ghcr.io/who-knows-inc/whoknows_variations_server:latest
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.dev
+    env_file:
+      - .env
     ports:
       - "8080:8080"
     networks:
@@ -11,19 +10,13 @@ services:
 
   whoknows_nginx:
     image: ghcr.io/who-knows-inc/whoknows_variations_nginx:latest
-    build:
-      context: ./network
-      dockerfile: Dockerfile
     ports:
       - "80:80"
     depends_on:
       - whoknows_flask
     networks:
       - my_network
-    volumes:
-      - ./network/nginx.conf:/etc/nginx/conf.d/default.conf
 
 networks:
   my_network:
     driver: bridge
-      
