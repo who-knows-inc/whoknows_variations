@@ -1,7 +1,12 @@
 echo "============================================================================================"
-echo "Update packages"
+echo "Disable Prompts and Update the system"
 echo "============================================================================================"
-sudo apt-get update && sudo apt-get install -y software-properties-common
+echo "\$nrconf{kernelhints} = 0;" | sudo tee -a /etc/needrestart/needrestart.conf
+echo "\$nrconf{restart} = 'a';" | sudo tee -a /etc/needrestart/needrestart.conf
+sudo DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=a NEEDRESTART_SUSPEND=1 apt-get update
+sudo DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=a NEEDRESTART_SUSPEND=1 apt-get dist-upgrade --yes --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::="--force-confnew" -o Dpkg::Options::="--force-confdef"
+sudo apt-get install -y software-properties-common
+sudo rm -f /var/run/reboot-required /var/run/reboot-required.pkgs
 echo "============================================================================================"
 echo "Install Node.js"
 echo "============================================================================================"
@@ -18,9 +23,13 @@ sudo pip3 install docker requests urllib3
 echo "============================================================================================"
 echo "Install Docker and give user permission"
 echo "============================================================================================"
-curl -fsSL https://get.docker.com | sudo sh
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 sudo usermod -aG docker $(whoami)
-sudo apt install -y docker-compose-plugin
 echo "============================================================================================"
 echo "Create a new user for GitHub Actions. Assuming that they will reuse the same SSH key as the admin user."
 echo "It is recommended that you generate a new SSH key for the GitHub Actions user and add it to `~/.ssh/authorized_keys`."
