@@ -3,10 +3,10 @@
 
 ## Get started
 
-cd into the src folder where `docker-compose.yml` is located and run the following command:
+cd into the src folder where `compose.yaml` is located and run the following command:
 
 ```bash
-$ docker-compose up --build
+$ docker compose up --build
 ```
 
 ## URLs
@@ -23,7 +23,7 @@ If you are following the tutorial with intent to implement it for your group, re
 
 ## Steps
 
-1. [The Flask Prometheus setup and docker-compose.yml](./tutorial/1._Flask_Prometheus_Setup.md)
+1. [The Flask Prometheus setup and compose.yaml](./tutorial/1._Flask_Prometheus_Setup.md)
 
 2. [The Grafana setup](./tutorial/2._Grafana_Setup.md)
 
