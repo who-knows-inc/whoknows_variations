@@ -7,18 +7,18 @@ FROM postgres:latest
 COPY schema.sql /docker-entrypoint-initdb.d/
 ```
 
-In the `src` folder a `docker-compose.yml` file is created to show how to setup the database with user credentials. You should absolutely consider how you can define these credentials in a way that ensure it won't be pushed into version control. 
+In the `src` folder a `compose.yaml` file is created to show how to setup the database with user credentials. You should absolutely consider how you can define these credentials in a way that ensure it won't be pushed into version control. 
 
 ### Volumes
 
-Furthermore, the `docker-compose.yml` file shows that a volume has been created called `database`. This ensures that even if the container is stopped and restarted, the data will persist. 
+Furthermore, the `compose.yaml` file shows that a volume has been created called `database`. This ensures that even if the container is stopped and restarted, the data will persist. 
 
 You can deploy your image to a registry and then deploy it to a server.
 
 You can run the database with the following command in the `src` folder (run without `-d` (detached mode) to see the logs the first time):
 
 ```bash
-$ docker-compose up --build
+$ docker compose up --build
 ```
 
 **Note**: The `restart: always` attribute means that the service tries to restart the container if it crashes.
@@ -54,7 +54,7 @@ You can always find PostgreSQL cheat sheets online.
 If you issues with the database and want to start over, you should remember to remove the volume too:
 
 ```bash
-$ docker-compose down -v
+$ docker compose down -v
 ```
 
 The above command removes both the container and the volume in one go. 

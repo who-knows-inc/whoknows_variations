@@ -18,7 +18,7 @@ POSTGRES_PORT=5432
 POSTGRES_DB=whoknows
 ```
 
-The interesting part is that due to the setup in the docker compose file, the application is on the same network as the database. Instead of an IP adress we can refer to it through the key defined in the `docker-compose.yml` file (`whoknows_database`). 
+The interesting part is that due to the setup in the docker compose file, the application is on the same network as the database. Instead of an IP adress we can refer to it through the key defined in the `compose.yaml` file (`whoknows_database`). 
 
 ## The dependencies
 
