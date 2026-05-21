@@ -29,4 +29,4 @@ jobs:
     - name: Build and Push Docker Images
       working-directory: ./src
       run: |
-        docker buildx bake -f docker-compose.prod.yml --push
+        docker buildx bake -f compose.prod.yaml --push
