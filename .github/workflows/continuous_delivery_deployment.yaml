@@ -33,7 +33,7 @@ jobs:
     - name: Build and Push Docker Images
       working-directory: ./src
       run: |
-        docker buildx bake -f docker-compose.prod.yml --push
+        docker buildx bake -f compose.prod.yaml --push
 
 
   deploy:
@@ -71,7 +71,7 @@ jobs:
     
       - name: Transfer Docker compose file to server
         run: |
-          scp -i ~/.ssh/ssh_key -o StrictHostKeyChecking=no src/docker-compose.prod.yml $SSH_USER@$SSH_HOST:docker-compose.yml
+          scp -i ~/.ssh/ssh_key -o StrictHostKeyChecking=no src/compose.prod.yaml $SSH_USER@$SSH_HOST:compose.yaml
         env:
             SSH_USER: ${{ secrets.SSH_USER }}
             SSH_HOST: ${{ secrets.SSH_HOST }}
