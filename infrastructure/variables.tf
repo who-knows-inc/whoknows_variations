@@ -95,19 +95,19 @@ variable "os_disk_storage_account_type" {
 variable "source_image_publisher" {
   description = "The publisher of the source image"
   type        = string
-  default     = "Canonical"
+  default     = "almalinux"
 }
 
 variable "source_image_offer" {
   description = "The offer of the source image"
   type        = string
-  default     = "UbuntuServer"
+  default     = "almalinux-x86_64"
 }
 
 variable "source_image_sku" {
   description = "The SKU of the source image"
   type        = string
-  default     = "18.04-LTS"
+  default     = "9-gen2"
 }
 
 variable "source_image_version" {
