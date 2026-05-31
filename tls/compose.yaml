@@ -1,12 +1,32 @@
-version: '3'
 services:
-  nginx:
-    image: nginx:latest
+  whoknows_flask:
+    image: ghcr.io/who-knows-inc/whoknows_variations_server-tls:latest
+    build:
+      context: ../src/backend
+      dockerfile: Dockerfile.prod
+    env_file:
+      - .env
+    networks:
+      - whoknows_net
+    restart: always
+
+  whoknows_nginx_tls:
+    image: ghcr.io/who-knows-inc/whoknows_variations_nginx-tls:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - /etc/letsencrypt/live/keacloud.dk:/etc/letsencrypt/live/keacloud.dk
-      - /etc/letsencrypt/archive/keacloud.dk:/etc/letsencrypt/archive/keacloud.dk
+      - /etc/letsencrypt/live/ekcloud.dk:/etc/letsencrypt/live/ekcloud.dk:ro
+      - /etc/letsencrypt/archive/ekcloud.dk:/etc/letsencrypt/archive/ekcloud.dk:ro
+    depends_on:
+      - whoknows_flask
+    networks:
+      - whoknows_net
     restart: always
+
+networks:
+  whoknows_net:
+    driver: bridge

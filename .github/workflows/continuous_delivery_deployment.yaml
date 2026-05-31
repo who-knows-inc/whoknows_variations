@@ -1,0 +1,69 @@
+name: Continuous Delivery Deployment (TLS)
+
+on:
+  push:
+    branches: [ tls ]
+  workflow_dispatch:
+
+env:
+  CR_PAT: ${{ secrets.CR_PAT }}
+  DOCKER_GITHUB_USERNAME: ${{ secrets.DOCKER_GITHUB_USERNAME }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check Out Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Log in to GitHub Container Registry
+        run: echo ${{ env.CR_PAT }} | docker login ghcr.io -u ${{ env.DOCKER_GITHUB_USERNAME }} --password-stdin
+
+      - name: Create empty .env (only needed at build time so env_file doesn't error)
+        run: touch ./tls/.env
+
+      - name: Build and Push Docker Images
+        working-directory: ./tls
+        run: |
+          docker buildx bake -f compose.yaml --push
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      SSH_USER: ${{ secrets.SSH_USER }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+
+    steps:
+      - name: Add SSH key to runner
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/ssh_key
+          chmod 600 ~/.ssh/ssh_key
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Check Out Repository
+        uses: actions/checkout@v2
+
+      - name: Create .env file for runtime
+        run: |
+          echo "GREETING=Hello from Github Action" > .env
+
+      - name: Transfer compose file, nginx.conf, and .env to server
+        run: |
+          ssh -i ~/.ssh/ssh_key -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "mkdir -p ~/tls"
+          scp -i ~/.ssh/ssh_key -o StrictHostKeyChecking=no tls/compose.yaml $SSH_USER@$SSH_HOST:~/tls/compose.yaml
+          scp -i ~/.ssh/ssh_key -o StrictHostKeyChecking=no .env $SSH_USER@$SSH_HOST:~/tls/.env
+
+      - name: Deploy to server
+        run: |
+          ssh -i ~/.ssh/ssh_key -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << "EOF"
+            cd ~/tls
+            sudo docker compose pull
+            sudo docker compose up -d
+          EOF
