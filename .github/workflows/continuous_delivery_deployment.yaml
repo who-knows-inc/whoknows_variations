@@ -8,23 +8,26 @@ on:
   workflow_dispatch:
 
 env:
-  CR_PAT: ${{ secrets.CR_PAT }}
-  DOCKER_GITHUB_USERNAME: ${{ secrets.DOCKER_GITHUB_USERNAME }}
+  REGISTRY: ghcr.io
   ENV_GREETING: ${{ secrets.ENV_GREETING }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read          # needed for checkout
+      packages: write         # needed to push to GHCR
 
     steps:
     - name: Check Out Repository
-      uses: actions/checkout@v2
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1    # v7.0.1  2026-07-17
 
     - name: Log in to GitHub Container Registry
-      run: echo ${{ env.CR_PAT }} | docker login ghcr.io -u ${{ env.DOCKER_GITHUB_USERNAME }} --password-stdin
+      uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0   Jul 29th 2026
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Create .env file
       run: |
