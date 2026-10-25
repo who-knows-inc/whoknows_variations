@@ -89,7 +89,7 @@ variable "os_disk_caching" {
 variable "os_disk_storage_account_type" {
   description = "The storage account type for the OS disk"
   type        = string
-  default     = "Standard_LRS"
+  default     = "StandardSSD_LRS"
 }
 
 variable "source_image_publisher" {
